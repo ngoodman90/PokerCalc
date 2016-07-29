@@ -30,4 +30,12 @@ public class Hand{
         this.card2 = card2;
     }
 
+    public void displayHand()
+    {
+        System.out.println("First card: ");
+        this.card1.displayCard();
+        System.out.println("Second card: ");
+        this.card2.displayCard();
+    }
+
 }
