@@ -11,12 +11,11 @@ public class Calculator {
 
     public static void main(String[] args)
     {
-        initialize_hands();
+        initialize_hands(new Scanner(System.in));
     }
 
-    private static void initialize_hands()
+    public static void initialize_hands(Scanner reader)
     {
-        Scanner reader = new Scanner(System.in);  // Reading from System.in
         boolean no_more_hands = false;
         int hand_counter = 0;
         while (!no_more_hands) {
