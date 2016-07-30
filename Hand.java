@@ -7,6 +7,7 @@ public class Hand{
 
     private Card card1;
     private Card card2;
+    private int hands_won = 0;
 
     Hand(Card card1, Card card2)
     {
@@ -28,6 +29,14 @@ public class Hand{
 
     public void setCard2(Card card2) {
         this.card2 = card2;
+    }
+
+    public int getHands_won() {
+        return hands_won;
+    }
+
+    public void setHands_won(int hands_won) {
+        this.hands_won = hands_won;
     }
 
     public void displayHand()

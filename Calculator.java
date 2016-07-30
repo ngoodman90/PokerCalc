@@ -1,3 +1,5 @@
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Scanner;
 
 /**
@@ -6,12 +8,14 @@ import java.util.Scanner;
 public class Calculator {
 
     private static final int MAX_HANDS = 9;
-    static final Deck deck = new Deck();
+    public static final Deck deck = Deck.getDeck();
     static Hand[] hands = new Hand[9];
+    public static int[] table = new int[5];
 
     public static void main(String[] args)
     {
         initialize_hands(new Scanner(System.in));
+        calculate_odds();
     }
 
     public static void initialize_hands(Scanner reader)
@@ -44,7 +48,6 @@ public class Calculator {
     public static Hand parseHand(String s)
     {
         Scanner hand_scanner = new Scanner(s);
-
         /*
         * first int in line is the first value of the first card,
         * second int in line is the suit of the first card.
@@ -61,7 +64,40 @@ public class Calculator {
 
     public static Card cardCreator(int val, int suit)
     {
-        deck.deck[(suit - 1) * (val - 2)].setUsed(true);
-        return deck.deck[(suit - 1) * (val - 2)];
+        deck.getCards()[((suit - 1) * 13) +  (val - 2)].setUsed(true);
+        return deck.getCards()[((suit - 1) * 13) +  (val - 2)];
     }
+
+    private static void calculate_odds()
+    {
+        findPossibleHands();
+        findBestHand();
+
+    }
+
+
+    private static boolean isLegalTable()
+    {
+        /*if one of the cards is used*/
+        for (int c : table)
+            if (deck.getCards()[c].isUsed())
+                return false;
+        /*if there is a duplicate card*/
+        if (!((new HashSet<>(
+                Arrays.asList(table[0], table[1], table[2], table[3], table[4])).size() == 5)))
+            return false;
+        return true;
+
+
+    }
+
+
+    private static void findBestHand() {
+
+    }
+
+    private static void findPossibleHands() {
+
+    }
+
 }

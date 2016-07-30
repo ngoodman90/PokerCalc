@@ -3,16 +3,36 @@
  */
 public class Deck {
 
-    Card[] deck = new Card[52];
+    /*
+    * This is a singleton class, since there is only one deck.
+    * This class only has one private variable, which is an array of
+    * 52 cards.
+    */
 
-    Deck()
+    private static Deck deck = new Deck();
+
+    private static Card[] cards = new Card[52];
+
+    private Deck()
     {
         int counter = 0;
         for (SUIT suit : SUIT.values())
         {
             for (int j = 0; j < 13; j++)
-                deck[(counter * 13) + j] = new Card(j + 2, suit);
+                cards[(counter * 13) + j] = new Card(((counter * 13) + j), (j + 2), suit);
             counter++;
         }
+    }
+    public static Deck getDeck()
+    {
+        return deck;
+    }
+
+    public Card[] getCards() {
+        return cards;
+    }
+
+    public void setCards(Card[] cards) {
+        this.cards = cards;
     }
 }

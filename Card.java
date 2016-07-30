@@ -5,9 +5,12 @@
 
 public class Card {
 
+    private int cardNumber;
     public int value;
     private SUIT suit;
     private boolean used = false;
+
+
 
     Card()
     {
@@ -15,8 +18,9 @@ public class Card {
         this.suit = SUIT.spade;
     }
 
-    Card(int v, SUIT s)
+    Card(int cardNumber, int v, SUIT s)
     {
+        this.cardNumber = cardNumber;
         this.value = v;
         this.suit = s;
     }
@@ -25,6 +29,14 @@ public class Card {
     {
         this.value = v;
         this.suit = s;
+    }
+
+    public int getCardNumber() {
+        return cardNumber;
+    }
+
+    public void setCardNumber(int cardNumber) {
+        this.cardNumber = cardNumber;
     }
 
     public boolean isUsed() {
@@ -38,7 +50,7 @@ public class Card {
     public void displayCard()
     {
         if (this.value <= 10)
-            System.out.printf("%d of  %s\n", this.value, this.suit.toString() + "s");
+            System.out.printf("%d) %d of %s\n", this.getCardNumber(), this.value, this.suit.toString() + "s");
         else
         {
             String string_value = "";
@@ -56,7 +68,7 @@ public class Card {
                     string_value = "Ace";
                     break;
             }
-            System.out.printf("%s of %s\n", string_value, this.suit.toString() + "s");
+            System.out.printf("%d) %s of %s\n", this.getCardNumber(), string_value, this.suit.toString() + "s");
         }
     }
 }

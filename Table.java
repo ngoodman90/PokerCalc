@@ -3,59 +3,100 @@
  */
 public class Table {
 
-    private Card[] flop = new Card[3];
-    private Card turn = new Card();
-    private Card river = new Card();
-    private boolean isFlop = false;
-    private boolean isTurn = false;
-    private boolean isRiver = false;
+    private static  Table table = new Table();
 
-    public Table() {
+    private static int[] tableCardNumbers = new int[5];
+    private static boolean isRoyalFlushPossible;
+    private static boolean isStraightFlushPossible;
+    private static boolean isFourOfAKindAndFullHousePossible;
+    private static boolean isFlushPossible;
+    private static boolean isStraightPossible;
+
+
+
+    /*
+    * This is the variable that holds the numbers of the cards on the table.
+    * We assume that any time a card is changed, the array is sorted.
+    */
+
+    public Table getTable()
+    {
+        return table;
+    }
+
+    public Table()
+    {
 
     }
 
-    public Table(Card[] flop) {
-        this.flop = flop;
-        this.isFlop = true;
+    private void isRoyalFlushPossible()
+    {
+        int tenOfSuit;
+        int aceOfSuit;
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < 4; j++) {
+                tenOfSuit = ((j * 13) + 8);
+                aceOfSuit = ((j * 13) + 12);
+                if ((tenOfSuit <= tableCardNumbers[i]) && (tableCardNumbers[i + 2] <= aceOfSuit)) {
+                    isRoyalFlushPossible = true;
+                    return;
+                }
+            }
+        }
     }
 
-    public Table(Card[] flop, Card turn) {
-        this.flop = flop;
-        this.turn = turn;
-        this.isFlop = true;
-        this.isTurn = true;
+    private void isStraightFlushPossible()
+    {
+        for (int i = 0; i < 3; i++) {
+            if ((tableCardNumbers[i] + 4 <= tableCardNumbers[i + 2]) &&
+                    ((tableCardNumbers[i]) / 13) == (tableCardNumbers[i + 2] / 13)) {
+                isStraightFlushPossible = true;
+                return;
+            }
+        }
     }
 
-    public Table(Card[] flop, Card turn, Card river) {
-        this.flop = flop;
-        this.turn = turn;
-        this.river = river;
-        this.isFlop = true;
-        this.isTurn = true;
-        this.isRiver = true;
+    private void isFourOfAKindAndFullHousePossible()
+    {
+        for (int i = 0; i < 4; i++) {
+            if ((tableCardNumbers[i] % 13) == (tableCardNumbers[i + 1] % 13))
+            {
+                isFourOfAKindAndFullHousePossible = true;
+                return;
+            }
+        }
     }
 
-    public Card[] getFlop() {
-        return flop;
+    private void isFlushPossible()
+    {
+        for (int i = 0; i < 3; i++) {
+            if ((tableCardNumbers[i] / 13) == (tableCardNumbers[i + 2] / 13))
+            {
+                isFlushPossible = true;
+                return;
+            }
+        }
     }
 
-    public void setFlop(Card[] flop) {
-        this.flop = flop;
+    private void isStraightPossible()
+    {
+        /* TODO */
     }
 
-    public Card getTurn() {
-        return turn;
-    }
+    public void resetPossibilities()
+    {
+        isRoyalFlushPossible = false;
+        isStraightFlushPossible = false;
+        isFourOfAKindAndFullHousePossible = false;
+        isFlushPossible = false;
+        isStraightPossible = false;
 
-    public void setTurn(Card turn) {
-        this.turn = turn;
-    }
+        isRoyalFlushPossible();
+        isStraightFlushPossible();
+        isFourOfAKindAndFullHousePossible();
+        isFlushPossible();
+        isStraightPossible();
 
-    public Card getRiver() {
-        return river;
-    }
 
-    public void setRiver(Card river) {
-        this.river = river;
     }
 }
