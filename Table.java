@@ -1,3 +1,5 @@
+import com.sun.xml.internal.bind.v2.TODO;
+
 import java.util.Arrays;
 
 /**
@@ -8,6 +10,7 @@ public class Table {
     private static Table table = new Table();
 
     private static final int NUM_OF_CARDS_IN_SUIT = 13;
+    private static final int NUM_OF_CARDS_IN_DECK = 52;
 
     private int[] tableCardNumbers = new int[5];
 
@@ -31,8 +34,55 @@ public class Table {
 
     private Table()
     {
-
+        for (int i = 0; i < 5; i++)
+        {
+            tableCardNumbers[i] = 0;
+        }
     }
+
+    public void startCalculation()
+    {
+        for (int index0 = 0; index0 < NUM_OF_CARDS_IN_DECK; index0++)
+        {
+            index0 = setTableCard(0, index0);
+            for (int index1 = index0 + 1; index1 < NUM_OF_CARDS_IN_DECK ; index1++)
+            {
+                index1 = setTableCard(1, index1);
+                for (int index2 = index1 + 1; index1 < NUM_OF_CARDS_IN_DECK; index1++)
+                {
+                    index2 = setTableCard(2, index2);
+                    for (int index3 = index2 + 1; index1 < NUM_OF_CARDS_IN_DECK; index1++)
+                    {
+                        index3 = setTableCard(3, index3);
+                        for (int index4 = index3 + 1; index1 < NUM_OF_CARDS_IN_DECK; index1++)
+                        {
+                            index4 = setTableCard(4, index4);
+
+                            resetPossibilities();
+                            /*TODO*/
+
+
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private int setTableCard(int i, int cardNum)
+    {
+        while (!Deck.getDeck().getCard(cardNum).isUsed())
+            cardNum++;
+        this.tableCardNumbers[i] = cardNum;
+        Deck.getDeck().getCard(cardNum).setUsed(true);
+        return cardNum;
+    }
+
+    /*public void setCard(int index, int val)
+    {
+        this.tableCardNumbers[index] = val;
+        Deck.getDeck().getCard(val).setUsed(true);
+    }*/
 
     private void isRoyalFlushPossible()
     {
@@ -103,7 +153,7 @@ public class Table {
                     vals[0] = tableCardNumbers[i] % NUM_OF_CARDS_IN_SUIT;
                     vals[1] = tableCardNumbers[j] % NUM_OF_CARDS_IN_SUIT;
                     vals[2] = tableCardNumbers[k] % NUM_OF_CARDS_IN_SUIT;
-                    Arrays.sort(vals);
+                    Arrays.sort(vals);//not sure this is needed, array is already sorted
 
                     if (((vals[2] - vals[0] < 5) && (vals[0] != vals[1] && vals[1]!= vals[2])) ||
                             (vals[2] == NUM_OF_CARDS_IN_SUIT - 1 && vals[0] < 4 && vals[1] < 4 && vals[0] != vals[1]))
@@ -116,7 +166,7 @@ public class Table {
         }
     }
 
-    public void resetPossibilities()
+    private void resetPossibilities()
     {
         isRoyalFlushPossible = false;
         isStraightFlushPossible = false;

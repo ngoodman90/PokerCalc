@@ -8,10 +8,6 @@ import java.util.Scanner;
 public class Calculator {
 
     private static final int MAX_HANDS = 9;
-    public static final Deck deck = Deck.getDeck();
-    static Hand[] hands = new Hand[9];
-    public static final Table table = Table.getTable();
-
 
     public static void main(String[] args)
     {
@@ -21,6 +17,7 @@ public class Calculator {
 
     public static void initialize_hands(Scanner reader)
     {
+        Hand[] hands = new Hand[9];
         boolean no_more_hands = false;
         int hand_counter = 0;
         while (!no_more_hands) {
@@ -39,6 +36,11 @@ public class Calculator {
                 }
             }
         }
+        displayHands(hand_counter, hands);
+    }
+
+    public static void displayHands(int hand_counter, Hand[] hands)
+    {
         for (int i = 0; i < hand_counter; i++)
         {
             System.out.printf("Hand number %d:\n", i + 1);
@@ -65,8 +67,8 @@ public class Calculator {
 
     public static Card cardCreator(int val, int suit)
     {
-        deck.getCards()[((suit - 1) * 13) +  (val - 2)].setUsed(true);
-        return deck.getCards()[((suit - 1) * 13) +  (val - 2)];
+        Deck.getDeck().getCards()[((suit - 1) * 13) +  (val - 2)].setUsed(true);
+        return Deck.getDeck().getCards()[((suit - 1) * 13) +  (val - 2)];
     }
 
     private static void calculate_odds()
@@ -75,23 +77,6 @@ public class Calculator {
         findBestHand();
 
     }
-
-
-/*    private static boolean isLegalTable()
-    {
-        *//*if one of the cards is used*//*
-        for (int c : table)
-            if (deck.getCards()[c].isUsed())
-                return false;
-        *//*if there is a duplicate card*//*
-        if (!((new HashSet<>(
-                Arrays.asList(table[0], table[1], table[2], table[3], table[4])).size() == 5)))
-            return false;
-        return true;
-
-
-    }*/
-
 
     private static void findBestHand() {
 
