@@ -11,7 +11,7 @@ public class Deck {
 
     private static Deck deck = new Deck();
 
-    private static Card[] cards = new Card[52];
+    private Card[] cards = new Card[52];
 
     private Deck()
     {
@@ -19,7 +19,7 @@ public class Deck {
         for (SUIT suit : SUIT.values())
         {
             for (int j = 0; j < 13; j++)
-                cards[(counter * 13) + j] = new Card(((counter * 13) + j), (j + 2), suit);
+                this.cards[(counter * 13) + j] = new Card(((counter * 13) + j), (j + 2), suit);
             counter++;
         }
     }

@@ -10,7 +10,8 @@ public class Calculator {
     private static final int MAX_HANDS = 9;
     public static final Deck deck = Deck.getDeck();
     static Hand[] hands = new Hand[9];
-    public static int[] table = new int[5];
+    public static final Table table = Table.getTable();
+
 
     public static void main(String[] args)
     {
@@ -76,20 +77,20 @@ public class Calculator {
     }
 
 
-    private static boolean isLegalTable()
+/*    private static boolean isLegalTable()
     {
-        /*if one of the cards is used*/
+        *//*if one of the cards is used*//*
         for (int c : table)
             if (deck.getCards()[c].isUsed())
                 return false;
-        /*if there is a duplicate card*/
+        *//*if there is a duplicate card*//*
         if (!((new HashSet<>(
                 Arrays.asList(table[0], table[1], table[2], table[3], table[4])).size() == 5)))
             return false;
         return true;
 
 
-    }
+    }*/
 
 
     private static void findBestHand() {
