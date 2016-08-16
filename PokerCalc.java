@@ -1,34 +1,31 @@
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Scanner;
-
 /**
  * Created by Noam on 7/26/2016.
  */
-public class Calculator {
+
+import java.util.ArrayList;
+import java.util.Scanner;
+
+public class PokerCalc {
 
     private static final int MAX_HANDS = 9;
 
     public static void main(String[] args)
     {
         initialize_hands(new Scanner(System.in));
-        calculate_odds();
     }
 
     public static void initialize_hands(Scanner reader)
     {
-        Hand[] hands = new Hand[9];
-        boolean no_more_hands = false;
-        int hand_counter = 0;
-        while (!no_more_hands) {
+        ArrayList<Hand> hands = new ArrayList<>();
+        while (true) {
             System.out.println("Enter a hand: ");
-            String hand_string = reader.nextLine(); // Scans the next token of the input as an int.
+            String hand_string = reader.nextLine();
             if (hand_string.equals(""))
-                no_more_hands = true;
+                break;
             else
             {
-                if (hand_counter <= MAX_HANDS)
-                    hands[hand_counter++] = parseHand(hand_string);
+                if (hands.size() <= MAX_HANDS)
+                    hands.add(parseHand(hand_string));
                 else
                 {
                     System.out.println("No more hands allowed\n");
@@ -36,15 +33,16 @@ public class Calculator {
                 }
             }
         }
-        displayHands(hand_counter, hands);
+        displayHands(hands);
+        Table.getTable().startCalculation(hands);
     }
 
-    public static void displayHands(int hand_counter, Hand[] hands)
+    public static void displayHands(ArrayList<Hand> hands)
     {
-        for (int i = 0; i < hand_counter; i++)
+        for (int i = 0; i < hands.size(); i++)
         {
             System.out.printf("Hand number %d:\n", i + 1);
-            hands[i].displayHand();
+            hands.get(i).displayHand();
         }
     }
 
@@ -70,20 +68,4 @@ public class Calculator {
         Deck.getDeck().getCards()[((suit - 1) * 13) +  (val - 2)].setUsed(true);
         return Deck.getDeck().getCards()[((suit - 1) * 13) +  (val - 2)];
     }
-
-    private static void calculate_odds()
-    {
-        findPossibleHands();
-        findBestHand();
-
-    }
-
-    private static void findBestHand() {
-
-    }
-
-    private static void findPossibleHands() {
-
-    }
-
 }

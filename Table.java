@@ -1,6 +1,8 @@
-import com.sun.xml.internal.bind.v2.TODO;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+
+import static java.util.Arrays.sort;
 
 /**
  * Created by Noam on 7/27/2016.
@@ -14,11 +16,11 @@ public class Table {
 
     private int[] tableCardNumbers = new int[5];
 
-    private static boolean isRoyalFlushPossible;
+    /*private static boolean isRoyalFlushPossible;
     private static boolean isStraightFlushPossible;
     private static boolean isFourOfAKindAndFullHousePossible;
     private static boolean isFlushPossible;
-    private static boolean isStraightPossible;
+    private static boolean isStraightPossible;*/
 
 
 
@@ -40,59 +42,53 @@ public class Table {
         }
     }
 
-    public void startCalculation()
+    public void startCalculation(ArrayList<Hand> hands)
     {
-        for (int index0 = 0; index0 < NUM_OF_CARDS_IN_DECK; index0++)
+        int[][] sortedCards = new int[hands.size()][7];
+        int[][] sortedVals = new int[hands.size()][7];
+
+        for (int i = 0; i < hands.size(); i++)
         {
-            index0 = setTableCard(0, index0);
-            for (int index1 = index0 + 1; index1 < NUM_OF_CARDS_IN_DECK ; index1++)
+            //first two indexes store the user hand which doesnt change, the rest are the table cards
+            sortedCards[i][0] = hands.get(i).getCard1().getCardNumber();
+            sortedCards[i][1] = hands.get(i).getCard2().getCardNumber();
+            sortedVals[i][0] = hands.get(i).getCard1().getCardNumber() % NUM_OF_CARDS_IN_SUIT;
+            sortedVals[i][1] = hands.get(i).getCard2().getCardNumber() % NUM_OF_CARDS_IN_SUIT;
+        }
+        int[] indexes = new int[5];
+        for (indexes[0] = 0; indexes[0] < NUM_OF_CARDS_IN_DECK; indexes[0]++)
+        {
+            indexes[0] = setTableCard(0, indexes[0]);
+            for (indexes[1] = indexes[0] + 1; indexes[1] < NUM_OF_CARDS_IN_DECK ; indexes[1]++)
             {
-                index1 = setTableCard(1, index1);
-                for (int index2 = index1 + 1; index1 < NUM_OF_CARDS_IN_DECK; index1++)
+                indexes[1] = setTableCard(0, indexes[1]);
+                for (indexes[2] = indexes[1] + 1; indexes[2] < NUM_OF_CARDS_IN_DECK; indexes[2]++)
                 {
-                    index2 = setTableCard(2, index2);
-                    for (int index3 = index2 + 1; index1 < NUM_OF_CARDS_IN_DECK; index1++)
+                    indexes[2] = setTableCard(0, indexes[2]);
+                    for (indexes[3] = indexes[2] + 1; indexes[3] < NUM_OF_CARDS_IN_DECK; indexes[3]++)
                     {
-                        index3 = setTableCard(3, index3);
-                        for (int index4 = index3 + 1; index1 < NUM_OF_CARDS_IN_DECK; index1++)
+                        indexes[3] = setTableCard(0, indexes[3]);
+                        for (indexes[4] = indexes[3] + 1; indexes[4] < NUM_OF_CARDS_IN_DECK; indexes[4]++)
                         {
-                            index4 = setTableCard(4, index4);
+                            indexes[4] = setTableCard(0, indexes[4]);
 
-                            resetPossibilities();
-                            /*TODO*/
+                            for (int i = 0; i < hands.size(); i++)
+                            {
+                                for (int j = 0; j < 5; j++)
+                                {
+                                    sortedCards[i][j + 2] = indexes[j];
+                                    sortedVals[i][j + 2] = indexes[j] % NUM_OF_CARDS_IN_SUIT;
+                                }
+                                sort(sortedCards[i]);
+                                sort(sortedVals[i]);
 
-
+                                handValue(sortedCards[i], sortedVals[i]);
+                            }
                         }
                     }
                 }
             }
         }
-    }
-    
-    private int handValue()
-    {
-        int ans = 0;
-        if (pair())
-            return 10;
-        if (twoPair())
-            return 10;
-        if (threeOfAKind())
-            return 10;
-        if (straight())
-            return 10;
-        if (flush())
-            return 10;
-        if (fullHouse())
-            return 10;
-        if (fourOfAKind())
-            return 10;
-        if (straightFlush())
-            ans = 9;
-        if (royalFlush())
-            ans = 10;
-        
-        
-        return ans;
     }
 
     private int setTableCard(int i, int cardNum)
@@ -103,14 +99,49 @@ public class Table {
         Deck.getDeck().getCard(cardNum).setUsed(true);
         return cardNum;
     }
-
-    /*public void setCard(int index, int val)
+    
+    private int handValue(int[] sortedCards, int[] sortedVals)
     {
-        this.tableCardNumbers[index] = val;
-        Deck.getDeck().getCard(val).setUsed(true);
-    }*/
+        int ans = 0;
+        if (pair(sortedVals))
+        {
+            if (twoPair(sortedVals))
+            {
+                if (threeOfAKind(sortedVals))
+                {
+                    if (fullHouse(sortedVals))
+                    {
+                        if (fourOfAKind(sortedVals))
+                        {
 
-    private void isRoyalFlushPossible()
+                        }
+                    }
+                }
+            }
+        }
+        if (straight(sortedVals))
+        {
+            if (flush(sortedCards))
+            {
+                if (straightFlush(sortedCards, sortedVals))
+                {
+                    if (royalFlush(sortedCards, sortedVals))
+                    {
+
+                    }
+                }
+            }
+        }
+        if (flush(sortedCards))
+        {
+
+        }
+        return ans;
+    }
+
+
+
+    /*private void isRoyalFlushPossible()
     {
         int tenOfSuit;
         int aceOfSuit;
@@ -161,13 +192,13 @@ public class Table {
 
     private void isStraightPossible()
     {
-        /*
+        *//*
         * We check all the possible sets of 3, to see if a straight is possible. This is done in 5 choose 3 = 10,
         * and much better than previous check of going 1 to NUM_OF_CARDS_IN_SUIT and checking if there is a straight possibility.
         * We check that the diff between the lowest of the three lower by 4 or less than the highest. In addition,
         * all 3 cards have to be different. The second case in the if, is when one of the cards is an Ace, and the
         * straight can be formed with the smaller cards.
-        */
+        *//*
         int[] vals = new int[3];
         for (int i = 0; i < 5; i++)
         {
@@ -207,7 +238,7 @@ public class Table {
         isStraightPossible();
 
 
-    }
+    }*/
 
     private boolean royalFlush(int[] sortedCards, int[] sortedVals)
     {
@@ -242,6 +273,84 @@ public class Table {
 
     private boolean fullHouse(int[] sortedVals)
     {
+        for (int i = 0; i < 3; i++)
+        {
+            if (sortedVals[i] == sortedVals[i + 3])
+            {
+                for (int j = i + 3; j < 7; j++)
+                    if (sortedVals[j] == sortedVals[j + 1])
+                        return true;
+            }
+            if (sortedVals[i] == sortedVals[i + 2])
+            {
+                for (int j = i + 2; j < 7; j++)
+                    if (sortedVals[j] == sortedVals[j + 2])
+                        return true;
+            }
+        }
+        return false;
+    }
 
+    private boolean flush(int[] sortedCards)
+    {
+        for (int i = 0; i < 3; i++)
+        {
+            if ((sortedCards[i] / NUM_OF_CARDS_IN_SUIT == sortedCards[i + 1] / NUM_OF_CARDS_IN_SUIT)
+                && (sortedCards[i] / NUM_OF_CARDS_IN_SUIT == sortedCards[i + 2] / NUM_OF_CARDS_IN_SUIT)
+                && (sortedCards[i] / NUM_OF_CARDS_IN_SUIT == sortedCards[i + 3] / NUM_OF_CARDS_IN_SUIT)
+                && (sortedCards[i] / NUM_OF_CARDS_IN_SUIT == sortedCards[i + 4] / NUM_OF_CARDS_IN_SUIT))
+                return true;
+
+        }
+        return false;
+    }
+
+    private boolean straight(int[] sortedVals)
+    {
+        /*TODO delete duplicates and check case were A through 5 is the straight*/
+        for (int i = 0; i < 3; i++)
+        {
+            if ((sortedVals[i] + 1 == sortedVals[i + 1])
+                && (sortedVals[i] + 2 == sortedVals[i + 2])
+                && (sortedVals[i] + 3 == sortedVals[i + 3])
+                && (sortedVals[i] + 4 == sortedVals[i + 4]))
+                return true;
+
+        }
+        return false;
+    }
+
+    private boolean threeOfAKind(int[] sortedVals)
+    {
+        for (int i = 0; i < 4; i++)
+        {
+            if (sortedVals[i] == sortedVals[i + 2])
+                return true;
+        }
+        return false;
+    }
+
+    private boolean twoPair(int[] sortedVals)
+    {
+        for (int i = 0; i < 3; i++)
+        {
+            if (sortedVals[i] == sortedVals[i + 1])
+            {
+                for (int j = i + 2; j < 7; j++)
+                    if (sortedVals[j] == sortedVals[j + 1])
+                        return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean pair(int[] sortedVals)
+    {
+        for (int i = 0; i < 3; i++)
+        {
+            if (sortedVals[i] == sortedVals[i + 1])
+                return true;
+        }
+        return false;
     }
 }

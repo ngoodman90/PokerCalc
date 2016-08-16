@@ -82,7 +82,7 @@ public class CalcTest {
                 "49) Queen of clubs\n" +
                 "50) King of clubs\n" +
                 "51) Ace of clubs\n";
-        for (Card c : Calculator.deck.getCards())
+        for (Card c : Deck.getDeck().getCards())
             c.displayCard();
         assertEquals(expected_string, outContent.toString());
     }
@@ -105,7 +105,7 @@ public class CalcTest {
                 "26) 2 of diamonds\n" +
                 "Second card: \n" +
                 "5) 7 of spades\n";
-        Calculator.initialize_hands(new Scanner(test_str));
+        PokerCalc.initialize_hands(new Scanner(test_str));
         assertEquals(expected_string, outContent.toString());
     }
 }
