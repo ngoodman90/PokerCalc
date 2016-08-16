@@ -68,6 +68,32 @@ public class Table {
             }
         }
     }
+    
+    private int handValue()
+    {
+        int ans = 0;
+        if (pair())
+            return 10;
+        if (twoPair())
+            return 10;
+        if (threeOfAKind())
+            return 10;
+        if (straight())
+            return 10;
+        if (flush())
+            return 10;
+        if (fullHouse())
+            return 10;
+        if (fourOfAKind())
+            return 10;
+        if (straightFlush())
+            ans = 9;
+        if (royalFlush())
+            ans = 10;
+        
+        
+        return ans;
+    }
 
     private int setTableCard(int i, int cardNum)
     {
@@ -137,7 +163,7 @@ public class Table {
     {
         /*
         * We check all the possible sets of 3, to see if a straight is possible. This is done in 5 choose 3 = 10,
-        * and much better than previous check of going 1 to 13 and checking if there is a straight possibility.
+        * and much better than previous check of going 1 to NUM_OF_CARDS_IN_SUIT and checking if there is a straight possibility.
         * We check that the diff between the lowest of the three lower by 4 or less than the highest. In addition,
         * all 3 cards have to be different. The second case in the if, is when one of the cards is an Ace, and the
         * straight can be formed with the smaller cards.
@@ -180,6 +206,42 @@ public class Table {
         isFlushPossible();
         isStraightPossible();
 
+
+    }
+
+    private boolean royalFlush(int[] sortedCards, int[] sortedVals)
+    {
+        for (int i = 0; i < 3; i++)
+            if ((sortedCards[i] % NUM_OF_CARDS_IN_SUIT == 8) //first of 5 cards is a 10
+                    && (sortedCards[i + 4] % NUM_OF_CARDS_IN_SUIT == 12) // last of 5 cards is an A
+                    && (sortedCards[i] / NUM_OF_CARDS_IN_SUIT == sortedCards[i + 4] / NUM_OF_CARDS_IN_SUIT)) // All five cards are in the same suit
+                return true;
+        return false;
+    }
+
+    private boolean straightFlush(int[] sortedCards, int[] sortedVals)
+    {
+        for (int i = 0; i < 3; i++)
+        {
+            if ((sortedCards[i] + 4 == sortedCards[i + 4])
+                && (sortedCards[i] / NUM_OF_CARDS_IN_SUIT == sortedCards[i + 4] / NUM_OF_CARDS_IN_SUIT))
+                return true;
+        }
+        return false;
+    }
+
+    private boolean fourOfAKind(int[] sortedVals)
+    {
+        for (int i = 0; i < 3; i++)
+        {
+            if (sortedVals[i] == sortedVals[i + 3])
+                return true;
+        }
+        return false;
+    }
+
+    private boolean fullHouse(int[] sortedVals)
+    {
 
     }
 }
