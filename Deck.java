@@ -1,3 +1,5 @@
+import java.util.ArrayList;
+
 /**
  * Created by Noam on 7/26/2016.
  */
@@ -11,7 +13,7 @@ public class Deck {
 
     private static Deck deck = new Deck();
 
-    private Card[] cards = new Card[52];
+    private ArrayList<Card> cards = new ArrayList<>();
 
     private Deck()
     {
@@ -19,7 +21,7 @@ public class Deck {
         for (SUIT suit : SUIT.values())
         {
             for (int j = 0; j < 13; j++)
-                this.cards[(counter * 13) + j] = new Card(((counter * 13) + j), (j + 2), suit);
+                this.cards.add(new Card(((counter * 13) + j), (j + 2), suit));
             counter++;
         }
     }
@@ -28,15 +30,9 @@ public class Deck {
         return deck;
     }
 
-    public Card[] getCards() {
+    public ArrayList<Card> getCards() {
         return cards;
     }
 
-    public Card getCard(int num) {
-        return cards[num];
-    }
-
-    public void setCards(Card[] cards) {
-        this.cards = cards;
-    }
+    public Card getCard(int num) {return cards.get(num);}
 }

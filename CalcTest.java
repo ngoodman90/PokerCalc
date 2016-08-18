@@ -91,6 +91,8 @@ public class CalcTest {
     public void two_hands_test_1() {
         String test_str =
                 "14 2 13 4\n" + "2 3 7 1\n\n";
+                //A of Hearts, King of Clubs
+                //2 of Diamonds, 7 of Spades
         String expected_string =
                 "Enter a hand: \n" +
                 "Enter a hand: \n" +

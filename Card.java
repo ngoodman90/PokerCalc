@@ -8,44 +8,23 @@ public class Card {
     private int cardNumber;
     public int value;
     private SUIT suit;
-    private boolean used = false;
-
-
-
-    Card()
-    {
-        this.value = 0;
-        this.suit = SUIT.spade;
-    }
+    private boolean used;
 
     Card(int cardNumber, int v, SUIT s)
     {
         this.cardNumber = cardNumber;
         this.value = v;
         this.suit = s;
-    }
-
-    public void setCard(int v, SUIT s)
-    {
-        this.value = v;
-        this.suit = s;
+        this.used = false;
     }
 
     public int getCardNumber() {
         return cardNumber;
     }
 
-    public void setCardNumber(int cardNumber) {
-        this.cardNumber = cardNumber;
-    }
+    public boolean isUsed() {return used;}
 
-    public boolean isUsed() {
-        return used;
-    }
-
-    public void setUsed(boolean used) {
-        this.used = used;
-    }
+    public void setUsed(boolean used) {this.used = used;}
 
     public void displayCard()
     {

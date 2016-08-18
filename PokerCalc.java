@@ -7,7 +7,9 @@ import java.util.Scanner;
 
 public class PokerCalc {
 
-    private static final int MAX_HANDS = 9;
+    public static final int MAX_HANDS = 9;
+    public static final int NUM_OF_CARDS_IN_SUIT = 13;
+    public static final int NUM_OF_CARDS_IN_DECK = 52;
 
     public static void main(String[] args)
     {
@@ -18,7 +20,7 @@ public class PokerCalc {
     {
         ArrayList<Hand> hands = new ArrayList<>();
         while (true) {
-            System.out.println("Enter a hand: ");
+            System.out.println("Enter a hand:");
             String hand_string = reader.nextLine();
             if (hand_string.equals(""))
                 break;
@@ -58,14 +60,14 @@ public class PokerCalc {
         * 4 = club
         * Second card is parsed in similar fashion.
         */
-        Card first_card = cardCreator(hand_scanner.nextInt(), hand_scanner.nextInt());
-        Card second_card = cardCreator(hand_scanner.nextInt(), hand_scanner.nextInt());
-        return new Hand(first_card, second_card);
+        int first_card = userCardNumber(hand_scanner.nextInt(), hand_scanner.nextInt());
+        int second_card = userCardNumber(hand_scanner.nextInt(), hand_scanner.nextInt());
+        return new Hand(Deck.getDeck().getCard(first_card), Deck.getDeck().getCard(second_card));
     }
 
-    public static Card cardCreator(int val, int suit)
+    public static int userCardNumber(int val, int suit)
     {
-        Deck.getDeck().getCards()[((suit - 1) * 13) +  (val - 2)].setUsed(true);
-        return Deck.getDeck().getCards()[((suit - 1) * 13) +  (val - 2)];
+        Deck.getDeck().getCard(((suit - 1) * 13) +  (val - 2)).setUsed(true);
+        return (((suit - 1) * 13) +  (val - 2));
     }
 }
