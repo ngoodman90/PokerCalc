@@ -4,8 +4,16 @@
 
 import java.util.ArrayList;
 import java.util.Scanner;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class PokerCalc {
+
+
+
+    // assumes the current class is called MyLogger
+    private final static Logger LOGGER = Logger.getLogger(PokerCalc.class.getName());
+    /*LOGGER.setLevel(Level.INFO);*/
 
     public static final int MAX_HANDS = 9;
     public static final int NUM_OF_CARDS_IN_SUIT = 13;

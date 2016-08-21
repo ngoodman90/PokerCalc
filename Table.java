@@ -124,6 +124,7 @@ public class Table {
     {
         int ans1, ans2;
         int [] userAndTableVals = getVals(userAndTableCards);
+        sort(userAndTableVals);
         ans1 = (pair(userAndTableVals) ?
                 (twoPair(userAndTableVals) ?
                         (fullHouse(userAndTableVals) ?
@@ -243,7 +244,7 @@ public class Table {
         {
             if (userAndTableVals[i] == userAndTableVals[i + 1])
             {
-                for (int j = i + 2; j < userAndTableVals.length; j++)
+                for (int j = i + 2; j < userAndTableVals.length - 1; j++)
                     if (userAndTableVals[j] == userAndTableVals[j + 1])
                         return true;
             }
