@@ -82,33 +82,117 @@ public class CalcTest {
                 "49) Queen of clubs\n" +
                 "50) King of clubs\n" +
                 "51) Ace of clubs\n";
-        for (Card c : Deck.getDeck().getCards())
-            c.displayCard();
+        Deck.getDeck().getCards().forEach(Card::displayCard);
         assertEquals(expected_string, outContent.toString());
     }
 
     @Test
-    public void two_hands_test_1() {
-        String test_str =
-                "14 2 13 4\n" + "2 3 7 1\n\n";
-                //A of Hearts, King of Clubs
-                //2 of Diamonds, 7 of Spades
-        String expected_string =
-                "Enter a hand: \n" +
-                "Enter a hand: \n" +
-                "Enter a hand: \n" +
-                "Hand number 1:\n" +
-                "First card: \n" +
-                "25) Ace of hearts\n" +
-                "Second card: \n" +
-                "50) King of clubs\n" +
-                "Hand number 2:\n" +
-                "First card: \n" +
-                "26) 2 of diamonds\n" +
-                "Second card: \n" +
-                "5) 7 of spades\n";
-        PokerCalc.initialize_hands(new Scanner(test_str));
-        assertEquals(expected_string, outContent.toString());
+    public void pairTest1() {
+        int[] cards = {0, 1, 2 ,3, 22, 35, 50};
+        int ans = Table.handValue(cards);
+        assertEquals(ans, 2);
+    }
+
+    @Test
+    public void pairTest2() {
+        int[] cards = {};
+        int ans = Table.handValue(cards);
+        assertEquals(ans, 2);
+    }
+    @Test
+    public void twoPairTest1() {
+        int[] cards = {};
+        int ans = Table.handValue(cards);
+        assertEquals(ans, 3);
+    }
+    @Test
+    public void twoPairTest2() {
+        int[] cards = {};
+        int ans = Table.handValue(cards);
+        assertEquals(ans, 3);
+    }
+    @Test
+    public void threeOfAKindTest1() {
+        int[] cards = {};
+        int ans = Table.handValue(cards);
+        assertEquals(ans, 4);
+    }
+    @Test
+    public void threeOfAKindTest2() {
+        int[] cards = {};
+        int ans = Table.handValue(cards);
+        assertEquals(ans, 4);
+    }
+    @Test
+    public void fullHouseTest1() {
+        int[] cards = {};
+        int ans = Table.handValue(cards);
+        assertEquals(ans, 7);
+    }
+    @Test
+    public void fullHouseTest2() {
+        int[] cards = {};
+        int ans = Table.handValue(cards);
+        assertEquals(ans, 7);
+    }@Test
+    public void fourOfAKindTest1() {
+        int[] cards = {};
+        int ans = Table.handValue(cards);
+        assertEquals(ans, 8);
+    }
+    @Test
+    public void fourOfAKindTest2() {
+        int[] cards = {};
+        int ans = Table.handValue(cards);
+        assertEquals(ans, 8);
+    }
+    @Test
+    public void straightTest1() {
+        int[] cards = {};
+        int ans = Table.handValue(cards);
+        assertEquals(ans, 5);
+    }
+    @Test
+    public void straightTest2() {
+        int[] cards = {};
+        int ans = Table.handValue(cards);
+        assertEquals(ans, 5);
+    }
+    @Test
+    public void flushTest1() {
+        int[] cards = {};
+        int ans = Table.handValue(cards);
+        assertEquals(ans, 6);
+    }
+    @Test
+    public void flushTest2() {
+        int[] cards = {};
+        int ans = Table.handValue(cards);
+        assertEquals(ans, 6);
+    }
+    @Test
+    public void straightFlushTest1() {
+        int[] cards = {};
+        int ans = Table.handValue(cards);
+        assertEquals(ans, 9);
+    }
+    @Test
+    public void straightFlushTest2() {
+        int[] cards = {};
+        int ans = Table.handValue(cards);
+        assertEquals(ans, 9);
+    }
+    @Test
+    public void royalFlushTest1() {
+        int[] cards = {};
+        int ans = Table.handValue(cards);
+        assertEquals(ans, 10);
+    }
+    @Test
+    public void royalFlushTest2() {
+        int[] cards = {};
+        int ans = Table.handValue(cards);
+        assertEquals(ans, 10);
     }
 }
 

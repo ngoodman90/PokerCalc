@@ -1,4 +1,6 @@
 import java.util.ArrayList;
+import java.util.Arrays;
+
 import static java.util.Arrays.sort;
 
 /**
@@ -16,13 +18,12 @@ public class Table {
     public void startCalculation(ArrayList<Hand> hands)
     {
         int[][] userAndTableCards = new int[hands.size()][7];
-        int[][] userAndTableVals = new int[hands.size()][7];
 
-        setUserCards(hands, userAndTableCards, userAndTableVals);
-        randomizeTableCards(hands, userAndTableCards, userAndTableVals);
+        setUserCards(hands, userAndTableCards);
+        randomizeTableCards(hands, userAndTableCards);
     }
 
-    private void randomizeTableCards(ArrayList<Hand> hands, int[][] userAndTableCards, int[][] userAndTableVals) {
+    private void randomizeTableCards(ArrayList<Hand> hands, int[][] userAndTableCards) {
         int[] winningHands = new int[PokerCalc.MAX_HANDS];
         int maxValue;
         int maxIndex;
@@ -38,7 +39,6 @@ public class Table {
             for (int i = 0; i < hands.size(); i++)
             {
                 userAndTableCards[i][2] = indexes[0];
-                userAndTableVals[i][2] = indexes[0] % PokerCalc.NUM_OF_CARDS_IN_SUIT;
             }
             for (indexes[1] = indexes[0] + 1; indexes[1] < PokerCalc.NUM_OF_CARDS_IN_DECK ; indexes[1]++)
             {
@@ -46,14 +46,12 @@ public class Table {
                 for (int i = 0; i < hands.size(); i++)
                 {
                     userAndTableCards[i][3] = indexes[1];
-                    userAndTableVals[i][3] = indexes[1] % PokerCalc.NUM_OF_CARDS_IN_SUIT;
                 }
                 for (indexes[2] = indexes[1] + 1; indexes[2] < PokerCalc.NUM_OF_CARDS_IN_DECK; indexes[2]++) {
                     indexes[2] = setTableCard(indexes[2]);
                     for (int i = 0; i < hands.size(); i++)
                     {
                         userAndTableCards[i][4] = indexes[2];
-                        userAndTableVals[i][4] = indexes[2] % PokerCalc.NUM_OF_CARDS_IN_SUIT;
                     }
                     for (indexes[3] = indexes[2] + 1; indexes[3] < PokerCalc.NUM_OF_CARDS_IN_DECK; indexes[3]++)
                     {
@@ -61,7 +59,6 @@ public class Table {
                         for (int i = 0; i < hands.size(); i++)
                         {
                             userAndTableCards[i][5] = indexes[3];
-                            userAndTableVals[i][5] = indexes[3] % PokerCalc.NUM_OF_CARDS_IN_SUIT;
                         }
                             for (indexes[4] = indexes[3] + 1; indexes[4] < PokerCalc.NUM_OF_CARDS_IN_DECK; indexes[4]++)
                         {
@@ -69,17 +66,14 @@ public class Table {
                             for (int i = 0; i < hands.size(); i++)
                             {
                                 userAndTableCards[i][6] = indexes[4];
-                                userAndTableVals[i][6] = indexes[4] % PokerCalc.NUM_OF_CARDS_IN_SUIT;
                             }
                             maxValue = 0;
                             for (int i = 0; i < hands.size(); i++)
                             {
-                                tempUserAndTableCards = userAndTableCards[i];
-                                tempUserAndTableVals = userAndTableVals[i];
+                                tempUserAndTableCards = userAndTableCards[i].clone();
                                 sort(tempUserAndTableCards);
-                                sort(tempUserAndTableVals);
 
-                                currentHandValue = handValue(tempUserAndTableCards, tempUserAndTableVals);
+                                currentHandValue = handValue(tempUserAndTableCards);
                                 if (currentHandValue > maxValue)
                                 {
                                     maxValue = currentHandValue;
@@ -107,15 +101,13 @@ public class Table {
         }
     }
 
-    private void setUserCards(ArrayList<Hand> hands, int[][] userAndTableCards, int[][] userAndTableVals) {
+    private void setUserCards(ArrayList<Hand> hands, int[][] userAndTableCards) {
         int iterator = 0;
         for (Hand hand : hands)
         {
             //first two indexes store the user hand which doesnt change, the rest are the table cards
             userAndTableCards[iterator][0] = hand.getCard1().getCardNumber();
             userAndTableCards[iterator][1] = hand.getCard2().getCardNumber();
-            userAndTableVals[iterator][0] = hand.getCard1().getCardNumber() % PokerCalc.NUM_OF_CARDS_IN_SUIT;
-            userAndTableVals[iterator][1] = hand.getCard2().getCardNumber() % PokerCalc.NUM_OF_CARDS_IN_SUIT;
             iterator++;
         }
     }
@@ -128,17 +120,16 @@ public class Table {
         return cardNum;
     }
 
-    private int handValue(int[] userAndTableCards, int[] userAndTableVals)
+    public static int handValue(int[] userAndTableCards)
     {
         int ans1, ans2;
+        int [] userAndTableVals = getVals(userAndTableCards);
         ans1 = (pair(userAndTableVals) ?
                 (twoPair(userAndTableVals) ?
-                        (threeOfAKind(userAndTableVals) ?
-                                (fullHouse(userAndTableVals) ?
-                                        (fourOfAKind(userAndTableVals) ?  8 : 7)//4 of a kind or full house
-                                        : 4)//3 of a kind
-                                : 3)//two pair
-                        : 2)//pair
+                        (fullHouse(userAndTableVals) ?
+                                (fourOfAKind(userAndTableVals) ?  8 : 7)//4 of a kind or full house
+                                : 4)//3 of a kind
+                        : (threeOfAKind(userAndTableVals) ? 4 : 2))//not two pair, but three of a kind or pair
                 : 1);//high card
 
         ans2 = (straight(userAndTableVals) ?
@@ -151,7 +142,17 @@ public class Table {
         return (ans1 > ans2 ? ans1 : ans2);
     }
 
-    private boolean royalFlush(int[] userAndTableCards)
+    private static int[] getVals(int[] userAndTableCards)
+    {
+        int[] vals = new int[userAndTableCards.length];
+        for (int i = 0; i < userAndTableCards.length; i++)
+        {
+            vals[i] = userAndTableCards[i] % PokerCalc.NUM_OF_CARDS_IN_SUIT;
+        }
+        return vals;
+    }
+
+    private static boolean royalFlush(int[] userAndTableCards)
     {
         for (int i = 0; i < 3; i++)
             if ((userAndTableCards[i] % PokerCalc.NUM_OF_CARDS_IN_SUIT == 8) //first of 5 cards is a 10
@@ -161,7 +162,7 @@ public class Table {
         return false;
     }
 
-    private boolean straightFlush(int[] userAndTableCards)
+    private static boolean straightFlush(int[] userAndTableCards)
     {
         for (int i = 0; i < 3; i++)
         {
@@ -172,7 +173,7 @@ public class Table {
         return false;
     }
 
-    private boolean fourOfAKind(int[] userAndTableVals)
+    private static boolean fourOfAKind(int[] userAndTableVals)
     {
         for (int i = 0; i < 3; i++)
         {
@@ -182,7 +183,7 @@ public class Table {
         return false;
     }
 
-    private boolean fullHouse(int[] userAndTableVals)
+    private static boolean fullHouse(int[] userAndTableVals)
     {
         for (int i = 0; i < 3; i++)
         {
@@ -202,38 +203,33 @@ public class Table {
         return false;
     }
 
-    private boolean flush(int[] userAndTableCards)
+    private static boolean flush(int[] userAndTableCards)
     {
+        int suitOfFirstCard, suitOfFifthCard;
         for (int i = 0; i < 3; i++)
         {
-            if ((userAndTableCards[i] / PokerCalc.NUM_OF_CARDS_IN_SUIT == userAndTableCards[i + 1] / PokerCalc.NUM_OF_CARDS_IN_SUIT)
-                && (userAndTableCards[i] / PokerCalc.NUM_OF_CARDS_IN_SUIT == userAndTableCards[i + 2] / PokerCalc.NUM_OF_CARDS_IN_SUIT)
-                && (userAndTableCards[i] / PokerCalc.NUM_OF_CARDS_IN_SUIT == userAndTableCards[i + 3] / PokerCalc.NUM_OF_CARDS_IN_SUIT)
-                && (userAndTableCards[i] / PokerCalc.NUM_OF_CARDS_IN_SUIT == userAndTableCards[i + 4] / PokerCalc.NUM_OF_CARDS_IN_SUIT))
+            suitOfFirstCard = userAndTableCards[i] / PokerCalc.NUM_OF_CARDS_IN_SUIT;
+            suitOfFifthCard = userAndTableCards[i + 4] / PokerCalc.NUM_OF_CARDS_IN_SUIT;
+            if (suitOfFirstCard == suitOfFifthCard)
                 return true;
-
         }
         return false;
     }
 
-    private boolean straight(int[] userAndTableVals)
+    private static boolean straight(int[] userAndTableVals)
     {
-        /*TODO delete duplicates and check case were A through 5 is the straight*/
-        for (int i = 0; i < 3; i++)
+        int[] cardValsNoDuplciates = removeDuplicates(userAndTableVals);
+        for (int i = 0; i + 4 < cardValsNoDuplciates.length; i++)
         {
-            if ((userAndTableVals[i] + 1 == userAndTableVals[i + 1])
-                && (userAndTableVals[i] + 2 == userAndTableVals[i + 2])
-                && (userAndTableVals[i] + 3 == userAndTableVals[i + 3])
-                && (userAndTableVals[i] + 4 == userAndTableVals[i + 4]))
+            if (cardValsNoDuplciates[i] + 4 == cardValsNoDuplciates[i + 4])
                 return true;
-
         }
         return false;
     }
 
-    private boolean threeOfAKind(int[] userAndTableVals)
+    private static boolean threeOfAKind(int[] userAndTableVals)
     {
-        for (int i = 0; i < 4; i++)
+        for (int i = 0; i < userAndTableVals.length - 2; i++)
         {
             if (userAndTableVals[i] == userAndTableVals[i + 2])
                 return true;
@@ -241,13 +237,13 @@ public class Table {
         return false;
     }
 
-    private boolean twoPair(int[] userAndTableVals)
+    private static boolean twoPair(int[] userAndTableVals)
     {
-        for (int i = 0; i < 3; i++)
+        for (int i = 0; i < userAndTableVals.length - 1; i++)
         {
             if (userAndTableVals[i] == userAndTableVals[i + 1])
             {
-                for (int j = i + 2; j < 6; j++)
+                for (int j = i + 2; j < userAndTableVals.length; j++)
                     if (userAndTableVals[j] == userAndTableVals[j + 1])
                         return true;
             }
@@ -255,13 +251,19 @@ public class Table {
         return false;
     }
 
-    private boolean pair(int[] userAndTableVals)
+    private static boolean pair(int[] userAndTableVals)
     {
-        for (int i = 0; i < 3; i++)
+        for (int i = 0; i + 1 < userAndTableVals.length; i++)
         {
             if (userAndTableVals[i] == userAndTableVals[i + 1])
                 return true;
         }
         return false;
+    }
+
+    private static int[] removeDuplicates(int[] arr) {
+        return Arrays.stream(arr)
+                .distinct()
+                .toArray();
     }
 }
