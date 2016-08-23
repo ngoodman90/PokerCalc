@@ -115,7 +115,7 @@ public class CalcTest {
     }
     @Test
     public void twoPairTest2() {
-        int[] cards = {6, 19, 32, 35, 38, 41, 44};
+        int[] cards = {6, 19, 32, 31, 38, 41, 44};
         for (int i = 0; i < cards.length; i++)
             deck.getCard(cards[i]).displayCard();
         int ans = Table.handValue(cards);
@@ -123,23 +123,31 @@ public class CalcTest {
     }
     @Test
     public void threeOfAKindTest1() {
-        int[] cards = {};
+        int[] cards = {12, 25, 38, 45, 46, 47, 48};
         for (int i = 0; i < cards.length; i++)
             deck.getCard(cards[i]).displayCard();
         int ans = Table.handValue(cards);
-        assertEquals(3, ans);
+        assertEquals(4, ans);
     }
     @Test
     public void threeOfAKindTest2() {
-        int[] cards = {};
+        int[] cards = {6, 19, 32, 35, 38, 41, 44};
         for (int i = 0; i < cards.length; i++)
             deck.getCard(cards[i]).displayCard();
         int ans = Table.handValue(cards);
-        assertEquals(ans, 4);
+        assertEquals(4, ans);
+    }
+    @Test
+    public void threeOfAKindTest3() {
+        int[] cards = {6, 19, 32, 35, 38, 41, 44};
+        for (int i = 0; i < cards.length; i++)
+            deck.getCard(cards[i]).displayCard();
+        int ans = Table.handValue(cards);
+        assertEquals(4, ans);
     }
     @Test
     public void fullHouseTest1() {
-        int[] cards = {};
+        int[] cards = {0, 13, 26, 6, 19, 27, 34};
         for (int i = 0; i < cards.length; i++)
             deck.getCard(cards[i]).displayCard();
         int ans = Table.handValue(cards);
@@ -147,14 +155,14 @@ public class CalcTest {
     }
     @Test
     public void fullHouseTest2() {
-        int[] cards = {};
+        int[] cards = {7, 20, 33, 16, 42, 43, 1};
         for (int i = 0; i < cards.length; i++)
             deck.getCard(cards[i]).displayCard();
         int ans = Table.handValue(cards);
         assertEquals(ans, 7);
     }@Test
     public void fourOfAKindTest1() {
-        int[] cards = {};
+        int[] cards = {1, 14, 27, 40, 22, 37, 46};
         for (int i = 0; i < cards.length; i++)
             deck.getCard(cards[i]).displayCard();
         int ans = Table.handValue(cards);
@@ -162,7 +170,7 @@ public class CalcTest {
     }
     @Test
     public void fourOfAKindTest2() {
-        int[] cards = {};
+        int[] cards = {12, 25, 38, 51, 1, 7, 29};
         for (int i = 0; i < cards.length; i++)
             deck.getCard(cards[i]).displayCard();
         int ans = Table.handValue(cards);

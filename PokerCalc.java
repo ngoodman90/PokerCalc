@@ -4,16 +4,13 @@
 
 import java.util.ArrayList;
 import java.util.Scanner;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.logging.*;
+
+
 
 public class PokerCalc {
 
-
-
-    // assumes the current class is called MyLogger
-    private final static Logger LOGGER = Logger.getLogger(PokerCalc.class.getName());
-    /*LOGGER.setLevel(Level.INFO);*/
+    public static final Logger logger = Logger.getLogger(PokerCalc.class.getName());
 
     public static final int MAX_HANDS = 9;
     public static final int NUM_OF_CARDS_IN_SUIT = 13;
@@ -26,6 +23,9 @@ public class PokerCalc {
 
     public static void initialize_hands(Scanner reader)
     {
+        logger.setLevel(Level.INFO);
+        logger.log(Level.INFO, "Initializing hands");
+
         ArrayList<Hand> hands = new ArrayList<>();
         while (true) {
             System.out.println("Enter a hand:");
@@ -44,6 +44,7 @@ public class PokerCalc {
             }
         }
         displayHands(hands);
+        logger.log(Level.INFO, "Number of hands: %d", hands.size());
         Table.getTable().startCalculation(hands);
     }
 

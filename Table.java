@@ -31,7 +31,6 @@ public class Table {
         int numberOfWinningHands = 0;
         int[] indexes = new int[5];
         int[] tempUserAndTableCards;
-        int[] tempUserAndTableVals;
 
         for (indexes[0] = 0; indexes[0] < PokerCalc.NUM_OF_CARDS_IN_DECK; indexes[0]++)
         {
@@ -129,7 +128,7 @@ public class Table {
                 (twoPair(userAndTableVals) ?
                         (fullHouse(userAndTableVals) ?
                                 (fourOfAKind(userAndTableVals) ?  8 : 7)//4 of a kind or full house
-                                : 4)//3 of a kind
+                                : 3)//two pair
                         : (threeOfAKind(userAndTableVals) ? 4 : 2))//not two pair, but three of a kind or pair
                 : 1);//high card
 
