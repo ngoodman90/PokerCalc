@@ -27,8 +27,9 @@ public class Table {
         int[] winningHands = new int[PokerCalc.MAX_HANDS];
         int maxValue;
         int maxIndex;
+        int handIterator = 0;
         int currentHandValue;
-        int numberOfWinningHands = 0;
+        int numberOfWinningHands;
         int[] indexes = new int[5];
         int[] tempUserAndTableCards;
 
@@ -36,54 +37,46 @@ public class Table {
         {
             indexes[0] = setTableCard(indexes[0]);
             for (int i = 0; i < hands.size(); i++)
-            {
                 userAndTableCards[i][2] = indexes[0];
-            }
-            for (indexes[1] = indexes[0] + 1; indexes[1] < PokerCalc.NUM_OF_CARDS_IN_DECK ; indexes[1]++)
-            {
+            for (indexes[1] = indexes[0] + 1; indexes[1] < PokerCalc.NUM_OF_CARDS_IN_DECK ; indexes[1]++) {
                 indexes[1] = setTableCard(indexes[1]);
                 for (int i = 0; i < hands.size(); i++)
-                {
                     userAndTableCards[i][3] = indexes[1];
-                }
                 for (indexes[2] = indexes[1] + 1; indexes[2] < PokerCalc.NUM_OF_CARDS_IN_DECK; indexes[2]++) {
                     indexes[2] = setTableCard(indexes[2]);
                     for (int i = 0; i < hands.size(); i++)
-                    {
                         userAndTableCards[i][4] = indexes[2];
-                    }
-                    for (indexes[3] = indexes[2] + 1; indexes[3] < PokerCalc.NUM_OF_CARDS_IN_DECK; indexes[3]++)
-                    {
+                    for (indexes[3] = indexes[2] + 1; indexes[3] < PokerCalc.NUM_OF_CARDS_IN_DECK; indexes[3]++){
                         indexes[3] = setTableCard(indexes[3]);
                         for (int i = 0; i < hands.size(); i++)
-                        {
                             userAndTableCards[i][5] = indexes[3];
-                        }
-                            for (indexes[4] = indexes[3] + 1; indexes[4] < PokerCalc.NUM_OF_CARDS_IN_DECK; indexes[4]++)
-                        {
+                        for (indexes[4] = indexes[3] + 1; indexes[4] < PokerCalc.NUM_OF_CARDS_IN_DECK; indexes[4]++) {
                             indexes[4] = setTableCard(indexes[4]);
                             for (int i = 0; i < hands.size(); i++)
-                            {
                                 userAndTableCards[i][6] = indexes[4];
-                            }
                             maxValue = 0;
+                            numberOfWinningHands = 0;
                             for (int i = 0; i < hands.size(); i++)
+                            handIterator = 0;
+                            for (Hand hand : hands)
                             {
-                                tempUserAndTableCards = userAndTableCards[i].clone();
-                                sort(tempUserAndTableCards);
-
-                                currentHandValue = handValue(tempUserAndTableCards);
-                                if (currentHandValue > maxValue)
+                                tempUserAndTableCards = userAndTableCards[handIterator].clone();
+                                hand.setCurrentHandValue(handValue(tempUserAndTableCards));
+                                if (hand.getCurrentHandValue() > maxValue)
                                 {
-                                    maxValue = currentHandValue;
-                                    maxIndex = i;
+                                    maxValue = hand.getCurrentHandValue();
                                     winningHands = new int[PokerCalc.MAX_HANDS];
-                                    winningHands[0] = maxIndex;
+                                    winningHands[0] = handIterator;
                                     numberOfWinningHands = 1;
                                 }
-                                else if (currentHandValue == maxValue)
-                                    winningHands[numberOfWinningHands++] = i;
-
+                                else if (hand.getCurrentHandValue() == maxValue)
+                                    winningHands[numberOfWinningHands++] = handIterator;
+                            }
+                            if (numberOfWinningHands == 1)
+                                hands.get(winningHands[0]).incrementHandsWon();
+                            else
+                            {
+                                findBestHands(winningHands);
                             }
                             for (int k = 0; k < numberOfWinningHands; k++)
                                 hands.get(winningHands[k]).incrementHandsWon();
@@ -98,6 +91,23 @@ public class Table {
             }
             Deck.getDeck().getCard(indexes[0]).setUsed(false);
         }
+        printStatistics(hands);
+    }
+
+    private void findBestHands(int[] winningHands)
+    {
+
+    }
+
+    private void printStatistics(ArrayList<Hand> hands)
+    {
+        int sum = 0;
+        for (Hand hand : hands)
+            sum += hand.gethandsWon();
+        System.out.printf("Hands played: %d\n", sum);
+        int i = 0;
+        for (Hand hand : hands)
+            System.out.printf("Hand number %d won %d out of %d hands.\n", ++i, hand.gethandsWon(), sum);
     }
 
     private void setUserCards(ArrayList<Hand> hands, int[][] userAndTableCards) {
@@ -123,22 +133,20 @@ public class Table {
     {
         int ans1, ans2;
         int [] userAndTableVals = getVals(userAndTableCards);
+        sort(userAndTableCards);
         sort(userAndTableVals);
         ans1 = (pair(userAndTableVals) ?
-                (twoPair(userAndTableVals) ?
-                        (fullHouse(userAndTableVals) ?
-                                (fourOfAKind(userAndTableVals) ?  8 : 7)//4 of a kind or full house
-                                : 3)//two pair
-                        : (threeOfAKind(userAndTableVals) ? 4 : 2))//not two pair, but three of a kind or pair
+                (threeOfAKind(userAndTableVals) ?
+                        (fourOfAKind(userAndTableVals) ? 8 :
+                                (fullHouse(userAndTableVals) ? 7 : 4)) :
+                        twoPair(userAndTableVals) ? 3 : 2)
                 : 1);//high card
 
-        ans2 = (straight(userAndTableVals) ?
-                (flush(userAndTableCards) ?
-                        (straightFlush(userAndTableCards) ?
-                                (royalFlush(userAndTableCards) ? 10 : 9)//royal or straight flush
-                                : 6)//flush
-                        : 5)//straight
-                : (flush(userAndTableCards) ? 6 : 0));//flush or nothing
+        ans2 = (flush(userAndTableCards) ?
+                (straightFlush(userAndTableCards) ?
+                        (royalFlush(userAndTableCards) ? 10 : 9)//royal or straight flush
+                        : 6)//flush
+                : (straight(userAndTableVals) ? 5 : 0));//flush or nothing
         return (ans1 > ans2 ? ans1 : ans2);
     }
 
@@ -146,9 +154,7 @@ public class Table {
     {
         int[] vals = new int[userAndTableCards.length];
         for (int i = 0; i < userAndTableCards.length; i++)
-        {
             vals[i] = userAndTableCards[i] % PokerCalc.NUM_OF_CARDS_IN_SUIT;
-        }
         return vals;
     }
 
@@ -165,21 +171,26 @@ public class Table {
     private static boolean straightFlush(int[] userAndTableCards)
     {
         for (int i = 0; i < 3; i++)
-        {
             if ((userAndTableCards[i] + 4 == userAndTableCards[i + 4])
-                && (userAndTableCards[i] / PokerCalc.NUM_OF_CARDS_IN_SUIT == userAndTableCards[i + 4] / PokerCalc.NUM_OF_CARDS_IN_SUIT))
+                    && (userAndTableCards[i] / PokerCalc.NUM_OF_CARDS_IN_SUIT == userAndTableCards[i + 4] / PokerCalc.NUM_OF_CARDS_IN_SUIT))
                 return true;
-        }
+        for (int i = 0; i < userAndTableCards.length; i++)
+            if (userAndTableCards[i] % PokerCalc.NUM_OF_CARDS_IN_SUIT  == 12)
+            {
+                for (int j = 0; j < 4; j++)
+                    if ((userAndTableCards[j] + 3 == userAndTableCards[j + 3])
+                            && (userAndTableCards[j] % PokerCalc.NUM_OF_CARDS_IN_SUIT == 0)
+                            && userAndTableCards[j] / PokerCalc.NUM_OF_CARDS_IN_SUIT == userAndTableCards[i] / PokerCalc.NUM_OF_CARDS_IN_SUIT)
+                        return true;
+            }
         return false;
     }
 
     private static boolean fourOfAKind(int[] userAndTableVals)
     {
-        for (int i = 0; i < 3; i++)
-        {
+        for (int i = 0; i < 4; i++)
             if (userAndTableVals[i] == userAndTableVals[i + 3])
                 return true;
-        }
         return false;
     }
 
@@ -187,18 +198,14 @@ public class Table {
     {
         for (int i = 0; i < 3; i++)
         {
-            if (userAndTableVals[i] == userAndTableVals[i + 3])
-            {
-                for (int j = i + 3; j < 7; j++)
+            if (userAndTableVals[i] == userAndTableVals[i + 2])
+                for (int j = i + 3; j < userAndTableVals.length - 1; j++)
                     if (userAndTableVals[j] == userAndTableVals[j + 1])
                         return true;
-            }
-            if (userAndTableVals[i] == userAndTableVals[i + 2])
-            {
-                for (int j = i + 2; j < 7; j++)
+            if (userAndTableVals[i] == userAndTableVals[i + 1])
+                for (int j = i + 2; j < userAndTableVals.length - 2; j++)
                     if (userAndTableVals[j] == userAndTableVals[j + 2])
                         return true;
-            }
         }
         return false;
     }
@@ -218,46 +225,41 @@ public class Table {
 
     private static boolean straight(int[] userAndTableVals)
     {
-        int[] cardValsNoDuplciates = removeDuplicates(userAndTableVals);
-        for (int i = 0; i + 4 < cardValsNoDuplciates.length; i++)
-        {
-            if (cardValsNoDuplciates[i] + 4 == cardValsNoDuplciates[i + 4])
+        int[] valsNoDups = removeDuplicates(userAndTableVals);
+
+        //if there is an A, and the fourth card is a 5, then we have a straight
+        if (valsNoDups.length >= 5 && valsNoDups[3] == 3 && valsNoDups[valsNoDups.length - 1] == 12)
+            return true;
+
+        for (int i = 0; i + 4 < valsNoDups.length; i++)
+            if (valsNoDups[i] + 4 == valsNoDups[i + 4])
                 return true;
-        }
         return false;
     }
 
     private static boolean threeOfAKind(int[] userAndTableVals)
     {
         for (int i = 0; i < userAndTableVals.length - 2; i++)
-        {
             if (userAndTableVals[i] == userAndTableVals[i + 2])
                 return true;
-        }
         return false;
     }
 
     private static boolean twoPair(int[] userAndTableVals)
     {
         for (int i = 0; i < userAndTableVals.length - 1; i++)
-        {
             if (userAndTableVals[i] == userAndTableVals[i + 1])
-            {
                 for (int j = i + 2; j < userAndTableVals.length - 1; j++)
                     if (userAndTableVals[j] == userAndTableVals[j + 1])
                         return true;
-            }
-        }
         return false;
     }
 
     private static boolean pair(int[] userAndTableVals)
     {
         for (int i = 0; i + 1 < userAndTableVals.length; i++)
-        {
             if (userAndTableVals[i] == userAndTableVals[i + 1])
                 return true;
-        }
         return false;
     }
 

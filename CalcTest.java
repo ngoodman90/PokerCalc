@@ -8,7 +8,6 @@ import org.junit.Test;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
-import java.util.Scanner;
 
 import static org.junit.Assert.assertEquals;
 
@@ -115,7 +114,7 @@ public class CalcTest {
     }
     @Test
     public void twoPairTest2() {
-        int[] cards = {6, 19, 32, 31, 38, 41, 44};
+        int[] cards = {7, 19, 32, 31, 38, 41, 44};
         for (int i = 0; i < cards.length; i++)
             deck.getCard(cards[i]).displayCard();
         int ans = Table.handValue(cards);
@@ -174,71 +173,63 @@ public class CalcTest {
         for (int i = 0; i < cards.length; i++)
             deck.getCard(cards[i]).displayCard();
         int ans = Table.handValue(cards);
-        assertEquals(ans, 8);
+        assertEquals(8, ans);
     }
     @Test
     public void straightTest1() {
-        int[] cards = {};
+        int[] cards = {3, 30, 12, 44, 29, 19, 46};
         for (int i = 0; i < cards.length; i++)
             deck.getCard(cards[i]).displayCard();
         int ans = Table.handValue(cards);
-        assertEquals(ans, 5);
+        assertEquals(5, ans);
     }
     @Test
     public void straightTest2() {
-        int[] cards = {};
+        int[] cards = {51, 13, 25, 42, 2, 40, 1};
         for (int i = 0; i < cards.length; i++)
             deck.getCard(cards[i]).displayCard();
         int ans = Table.handValue(cards);
-        assertEquals(ans, 5);
+        assertEquals(5, ans);
     }
     @Test
     public void flushTest1() {
-        int[] cards = {};
+        int[] cards = {13, 16, 19, 0, 3, 21, 22};
         for (int i = 0; i < cards.length; i++)
             deck.getCard(cards[i]).displayCard();
         int ans = Table.handValue(cards);
-        assertEquals(ans, 6);
+        assertEquals(6, ans);
     }
     @Test
     public void flushTest2() {
-        int[] cards = {};
+        int[] cards = {35, 30, 31, 10, 50, 26, 28};
         for (int i = 0; i < cards.length; i++)
             deck.getCard(cards[i]).displayCard();
         int ans = Table.handValue(cards);
-        assertEquals(ans, 6);
+        assertEquals(6, ans);
     }
     @Test
     public void straightFlushTest1() {
-        int[] cards = {};
+        int[] cards = {38, 28, 48, 29, 26, 49, 27};
         for (int i = 0; i < cards.length; i++)
             deck.getCard(cards[i]).displayCard();
         int ans = Table.handValue(cards);
-        assertEquals(ans, 9);
+        assertEquals(9, ans);
     }
     @Test
     public void straightFlushTest2() {
-        int[] cards = {};
+        int[] cards = {18, 17, 19, 22, 21, 30, 20};
         for (int i = 0; i < cards.length; i++)
             deck.getCard(cards[i]).displayCard();
         int ans = Table.handValue(cards);
-        assertEquals(ans, 9);
+        assertEquals(9, ans);
     }
     @Test
     public void royalFlushTest1() {
-        int[] cards = {};
+        int[] cards = {47, 20, 48, 51, 2, 50, 49};
         for (int i = 0; i < cards.length; i++)
             deck.getCard(cards[i]).displayCard();
         int ans = Table.handValue(cards);
-        assertEquals(ans, 10);
-    }
-    @Test
-    public void royalFlushTest2() {
-        int[] cards = {};
-        for (int i = 0; i < cards.length; i++)
-            deck.getCard(cards[i]).displayCard();
-        int ans = Table.handValue(cards);
-        assertEquals(ans, 10);
+        assertEquals(10, ans);
     }
 }
 
