@@ -23,13 +23,21 @@ public class Table {
         randomizeTableCards(hands, userAndTableCards);
     }
 
+    private void setUserCards(ArrayList<Hand> hands, int[][] userAndTableCards) {
+        int iterator = 0;
+        for (Hand hand : hands)
+        {
+            //first two indexes store the user hand which doesnt change, the rest are the table cards
+            userAndTableCards[iterator][0] = hand.getCard1().getCardNumber();
+            userAndTableCards[iterator][1] = hand.getCard2().getCardNumber();
+            iterator++;
+        }
+    }
+
     private void randomizeTableCards(ArrayList<Hand> hands, int[][] userAndTableCards) {
-        int[] winningHands = new int[PokerCalc.MAX_HANDS];
+        ArrayList<Hand> winningHands = new ArrayList<>();
         int maxValue;
-        int maxIndex;
-        int handIterator = 0;
-        int currentHandValue;
-        int numberOfWinningHands;
+        int handIterator;
         int[] indexes = new int[5];
         int[] tempUserAndTableCards;
 
@@ -55,8 +63,7 @@ public class Table {
                             for (int i = 0; i < hands.size(); i++)
                                 userAndTableCards[i][6] = indexes[4];
                             maxValue = 0;
-                            numberOfWinningHands = 0;
-                            for (int i = 0; i < hands.size(); i++)
+                            /*for (int i = 0; i < hands.size(); i++) What is this line supposed to do????*/
                             handIterator = 0;
                             for (Hand hand : hands)
                             {
@@ -65,22 +72,16 @@ public class Table {
                                 if (hand.getCurrentHandValue() > maxValue)
                                 {
                                     maxValue = hand.getCurrentHandValue();
-                                    winningHands = new int[PokerCalc.MAX_HANDS];
-                                    winningHands[0] = handIterator;
-                                    numberOfWinningHands = 1;
+                                    //creating a new list with current hand in it
+                                    winningHands = new ArrayList<>(Arrays.asList(hand));
                                 }
                                 else if (hand.getCurrentHandValue() == maxValue)
-                                    winningHands[numberOfWinningHands++] = handIterator;
+                                    winningHands.add(hand);
                             }
-                            if (numberOfWinningHands == 1)
-                                hands.get(winningHands[0]).incrementHandsWon();
-                            else
-                            {
-                                findBestHands(winningHands);
-                            }
-                            for (int k = 0; k < numberOfWinningHands; k++)
-                                hands.get(winningHands[k]).incrementHandsWon();
-
+                            if (winningHands.size() > 1)
+                                findBestHands(winningHands, maxValue);
+                            for (Hand winningHand : winningHands)
+                                winningHand.incrementHandsWon();
                             Deck.getDeck().getCard(indexes[4]).setUsed(false);
                         }
                         Deck.getDeck().getCard(indexes[3]).setUsed(false);
@@ -94,9 +95,42 @@ public class Table {
         printStatistics(hands);
     }
 
-    private void findBestHands(int[] winningHands)
+    private void findBestHands(ArrayList<Hand> winningHands, int maxValue)
     {
+        switch (maxValue)
+        {
+            case 1://High Card
+                int maxCard = 0;
 
+                break;
+            case 2://Pair
+
+                break;
+            case 3://Two Pair
+
+                break;
+            case 4://Three of a Kind
+
+                break;
+            case 5://Straight
+
+                break;
+            case 6://Flush
+
+                break;
+            case 7://Full House
+
+                break;
+            case 8://Four of a Kind
+
+                break;
+            case 9://Straight Flush
+
+                break;
+            case 10://Royal Flush
+
+                break;
+        }
     }
 
     private void printStatistics(ArrayList<Hand> hands)
@@ -110,17 +144,6 @@ public class Table {
             System.out.printf("Hand number %d won %d out of %d hands.\n", ++i, hand.gethandsWon(), sum);
     }
 
-    private void setUserCards(ArrayList<Hand> hands, int[][] userAndTableCards) {
-        int iterator = 0;
-        for (Hand hand : hands)
-        {
-            //first two indexes store the user hand which doesnt change, the rest are the table cards
-            userAndTableCards[iterator][0] = hand.getCard1().getCardNumber();
-            userAndTableCards[iterator][1] = hand.getCard2().getCardNumber();
-            iterator++;
-        }
-    }
-
     private int setTableCard(int cardNum)
     {
         while (Deck.getDeck().getCard(cardNum).isUsed())
@@ -131,6 +154,18 @@ public class Table {
 
     public static int handValue(int[] userAndTableCards)
     {
+        /*Hand Values:
+        *  1: High Card
+        *  2: Pair
+        *  3: Two Pair
+        *  4: Three of a Kind
+        *  5: Straight
+        *  6: Flush
+        *  7: Full House
+        *  8: Four of a Kind
+        *  9: Straight Flush
+        * 10: Royal Flush
+        * */
         int ans1, ans2;
         int [] userAndTableVals = getVals(userAndTableCards);
         sort(userAndTableCards);
@@ -146,7 +181,7 @@ public class Table {
                 (straightFlush(userAndTableCards) ?
                         (royalFlush(userAndTableCards) ? 10 : 9)//royal or straight flush
                         : 6)//flush
-                : (straight(userAndTableVals) ? 5 : 0));//flush or nothing
+                : (straight(userAndTableVals) ? 5 : 0));//Straight or nothing
         return (ans1 > ans2 ? ans1 : ans2);
     }
 

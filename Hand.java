@@ -55,5 +55,4 @@ public class Hand{
         System.out.println("Second card: ");
         this.card2.displayCard();
     }
-
 }
