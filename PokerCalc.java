@@ -12,10 +12,6 @@ public class PokerCalc {
 
     public static final Logger logger = Logger.getLogger(PokerCalc.class.getName());
 
-    public static final int MAX_HANDS = 9;
-    public static final int NUM_OF_CARDS_IN_SUIT = 13;
-    public static final int NUM_OF_CARDS_IN_DECK = 52;
-
     public static void main(String[] args)
     {
         initialize_hands(new Scanner(System.in));
@@ -34,8 +30,8 @@ public class PokerCalc {
                 break;
             else
             {
-                if (hands.size() <= MAX_HANDS)
-                    hands.add(parseHand(hand_string));
+                if (hands.size() <= Constants.MAX_HANDS)
+                    hands.add(parseHand(hands.size(), hand_string));
                 else
                 {
                     System.out.println("No more hands allowed\n");
@@ -57,7 +53,7 @@ public class PokerCalc {
         }
     }
 
-    public static Hand parseHand(String s)
+    public static Hand parseHand(int index, String s)
     {
         Scanner hand_scanner = new Scanner(s);
         /*
@@ -71,12 +67,13 @@ public class PokerCalc {
         */
         int first_card = userCardNumber(hand_scanner.nextInt(), hand_scanner.nextInt());
         int second_card = userCardNumber(hand_scanner.nextInt(), hand_scanner.nextInt());
-        return new Hand(Deck.getDeck().getCard(first_card), Deck.getDeck().getCard(second_card));
+        return new Hand(index, Deck.getDeck().getCard(first_card), Deck.getDeck().getCard(second_card));
     }
 
     public static int userCardNumber(int val, int suit)
     {
-        Deck.getDeck().getCard(((suit - 1) * 13) +  (val - 2)).setUsed(true);
+    	//TODO make function understandable
+    	Deck.getDeck().getCard(((suit - 1) * 13) +  (val - 2)).setUsed(true);
         return (((suit - 1) * 13) +  (val - 2));
     }
 }

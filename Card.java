@@ -7,10 +7,10 @@ public class Card {
 
     private int cardNumber;
     public int value;
-    private SUIT suit;
+    private Constants.SUIT suit;
     private boolean used;
 
-    Card(int cardNumber, int v, SUIT s)
+    Card(int cardNumber, int v, Constants.SUIT s)
     {
         this.cardNumber = cardNumber;
         this.value = v;

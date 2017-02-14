@@ -18,7 +18,7 @@ public class Deck {
     private Deck()
     {
         int counter = 0;
-        for (SUIT suit : SUIT.values())
+        for (Constants.SUIT suit : Constants.SUIT.values())
         {
             for (int j = 0; j < 13; j++)
                 this.cards.add(new Card(((counter * 13) + j), (j + 2), suit));
