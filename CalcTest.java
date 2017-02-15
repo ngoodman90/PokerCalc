@@ -8,6 +8,7 @@ import org.junit.Test;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
+import java.util.ArrayList;
 
 import static org.junit.Assert.assertEquals;
 
@@ -249,5 +250,26 @@ public class CalcTest {
         int ans = hand.setHandValue();
         assertEquals(10, ans);
     }
+    @Test
+    public void twoHandComparisonPair() {
+        ArrayList<Hand> res;
+        int[] cards1 = {0, 1, 2 ,3, 22, 35, 50};//(2S, 3S, 4S, 5S, JH, JD, KC)
+        int[] cards2 = {0, 1, 2 ,3, 21, 34, 50};//(2S, 3S, 4S, 5S, 10H, 10D, KC)
+        Hand hand1 = new Hand(cards1);
+        Hand hand2 = new Hand(cards2);
+        ArrayList<Hand> hands = new ArrayList<>(2);
+        hands.add(hand1);
+        hands.add(hand2);
+        hands.forEach(hand -> hand.setHandValue());
+        Table.getTable().setTableHands(hands);
+        ArrayList<Integer> winningHandsIndexes = new ArrayList<>(2);
+        winningHandsIndexes.add(0);
+        winningHandsIndexes.add(1);
+        res = Table.getTable().findBestHands(winningHandsIndexes, 2);
+        for (Hand winningHand : res)
+            for (int i : winningHand.getCardsIncludingTable())
+                Deck.getDeck().getCard(i).displayCard();
+    }
+
 }
 

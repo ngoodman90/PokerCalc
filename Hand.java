@@ -12,9 +12,19 @@ public class Hand {
     private Card card2;
     private int currentHandValue = 0;
     private long handsWon = 0;
+
     private int[] cardsIncludingTable;
     private int[] sortedCards;
     private int[] sortedVals;
+
+    private int straightValue;
+    private int straightFlushValue;
+    private int[] flushValues = new int[5];
+    private int[] fourOfAKindValues = new int[2];
+    private int[] fullHouseValues = new int[2];
+    private int[] threeOfAKindValues = new int[3];
+    private int[] twoPairValues = new int[3];
+    private int[] pairValues = new int[4];
 
     Hand(int id, Card card1, Card card2) {
         this.id = id;
@@ -29,6 +39,8 @@ public class Hand {
     {
         this.cardsIncludingTable = cardsIncludingTable;
     }
+
+    public int getId() {return id;}
 
     public long gethandsWon() {
         return handsWon;
@@ -52,6 +64,10 @@ public class Hand {
             System.exit(1);
         }
     }
+
+    public int[] getSortedCards() {return sortedCards;}
+
+    public int[] getSortedVals() {return sortedVals;}
 
     public void setSortedCards()
     {
@@ -85,125 +101,217 @@ public class Hand {
         int ans1, ans2;
         setSortedCards();
         setSortedVals();
-        ans1 = (pair(sortedVals) ?
-                (threeOfAKind(sortedVals) ?
-                        (fourOfAKind(sortedVals) ? 8 :
-                                (fullHouse(sortedVals) ? 7 : 4)) :
-                        twoPair(sortedVals) ? 3 : 2)
+        ans1 = (pair() ?
+                (threeOfAKind() ?
+                        (fourOfAKind() ? 8 :
+                                (fullHouse() ? 7 : 4)) :
+                        twoPair() ? 3 : 2)
                 : 1);//high card
 
-        ans2 = (flush(sortedCards) ?
-                (straightFlush(sortedCards) ?
-                        (royalFlush(sortedCards) ? 10 : 9)//royal or straight flush
+        ans2 = (flush() ?
+                (straightFlush() ?
+                        (royalFlush() ? 10 : 9)//royal or straight flush
                         : 6)//flush
-                : (straight(sortedVals) ? 5 : 0));//Straight or nothing
+                : (straight() ? 5 : 0));//Straight or nothing
         currentHandValue =  (ans1 > ans2 ? ans1 : ans2);
         return currentHandValue;
     }
 
-    private boolean royalFlush(int[] sortedCards)
+    private boolean royalFlush()
     {
+        boolean ans = false;
         for (int i = 0; i < 3; i++)
             if ((sortedCards[i] % Constants.NUM_OF_CARDS_IN_SUIT == 8) //first of 5 cards is a 10
                     && (sortedCards[i + 4] % Constants.NUM_OF_CARDS_IN_SUIT == 12) // last of 5 cards is an A
                     && (sortedCards[i] / Constants.NUM_OF_CARDS_IN_SUIT == sortedCards[i + 4] / Constants.NUM_OF_CARDS_IN_SUIT)) // All five cards are in the same suit
-                return true;
-        return false;
+                ans  = true;
+        return ans;
     }
 
-    private boolean straightFlush(int[] sortedCards)
+    private boolean straightFlush()
     {
-        for (int i = 0; i < 3; i++)
-            if ((sortedCards[i] + 4 == sortedCards[i + 4])
-                    && (sortedCards[i] / Constants.NUM_OF_CARDS_IN_SUIT == sortedCards[i + 4] / Constants.NUM_OF_CARDS_IN_SUIT))
-                return true;
+        boolean ans = false;
+        //if there is an A, and the fourth card is a 5 of the same suit, then we have a straight flush
         for (int i = 0; i < sortedCards.length; i++)
-            if (sortedCards[i] % Constants.NUM_OF_CARDS_IN_SUIT  == 12)
-            {
+            if (sortedCards[i] % Constants.NUM_OF_CARDS_IN_SUIT  == 12) {
                 for (int j = 0; j < 4; j++)
                     if ((sortedCards[j] + 3 == sortedCards[j + 3])
                             && (sortedCards[j] % Constants.NUM_OF_CARDS_IN_SUIT == 0)
-                            && sortedCards[j] / Constants.NUM_OF_CARDS_IN_SUIT == sortedCards[i] / Constants.NUM_OF_CARDS_IN_SUIT)
-                        return true;
+                            && sortedCards[j] / Constants.NUM_OF_CARDS_IN_SUIT == sortedCards[i] / Constants.NUM_OF_CARDS_IN_SUIT) {
+                        straightFlushValue = 12;
+                        ans = true;
+                    }
             }
-        return false;
+        for (int i = 0; i < 3; i++)
+            if ((sortedCards[i] + 4 == sortedCards[i + 4])
+                    && (sortedCards[i] / Constants.NUM_OF_CARDS_IN_SUIT == sortedCards[i + 4] / Constants.NUM_OF_CARDS_IN_SUIT))
+            {
+                straightFlushValue = sortedCards[i + 4];
+                ans = true;
+            }
+        return ans;
     }
 
-    private boolean fourOfAKind(int[] sortedVals)
-    {
+    private boolean fourOfAKind() {
+        boolean ans = false;
         for (int i = 0; i < 4; i++)
             if (sortedVals[i] == sortedVals[i + 3])
-                return true;
-        return false;
+            {
+                fourOfAKindValues[0] = sortedVals[i];
+                if (i == 3)
+                    fourOfAKindValues[1] = sortedVals[i - 1];
+                else
+                    fourOfAKindValues[1] = sortedVals[6];
+                ans = true;
+            }
+
+        return ans;
     }
 
-    private boolean fullHouse(int[] sortedVals)
+    private boolean fullHouse()
     {
+        boolean ans = false;
         for (int i = 0; i < 3; i++)
         {
             if (sortedVals[i] == sortedVals[i + 2])
                 for (int j = i + 3; j < sortedVals.length - 1; j++)
                     if (sortedVals[j] == sortedVals[j + 1])
-                        return true;
+                    {
+                        fullHouseValues[0] = sortedVals[i];
+                        fullHouseValues[1] = sortedVals[j];
+                        ans = true;
+                    }
             if (sortedVals[i] == sortedVals[i + 1])
                 for (int j = i + 2; j < sortedVals.length - 2; j++)
                     if (sortedVals[j] == sortedVals[j + 2])
-                        return true;
+                    {
+                        fullHouseValues[0] = sortedVals[j];
+                        fullHouseValues[1] = sortedVals[i];
+                        ans = true;
+                    }
         }
-        return false;
+        return ans;
     }
 
-    private boolean flush(int[] sortedCards)
+    private boolean flush()
     {
+        boolean ans = false;
         int suitOfFirstCard, suitOfFifthCard;
         for (int i = 0; i < 3; i++)
         {
             suitOfFirstCard = sortedCards[i] / Constants.NUM_OF_CARDS_IN_SUIT;
             suitOfFifthCard = sortedCards[i + 4] / Constants.NUM_OF_CARDS_IN_SUIT;
             if (suitOfFirstCard == suitOfFifthCard)
-                return true;
+            {
+                for (int j = 0; j < 5; j++)
+                    flushValues[j] = sortedCards[i + 4 - j];
+                ans = true;
+            }
         }
-        return false;
+        return ans;
     }
 
-    private boolean straight(int[] sortedVals)
+    private boolean straight()
     {
+        boolean ans = false;
         int[] valsNoDups = removeDuplicates(sortedVals);
-
         //if there is an A, and the fourth card is a 5, then we have a straight
         if (valsNoDups.length >= 5 && valsNoDups[3] == 3 && valsNoDups[valsNoDups.length - 1] == 12)
-            return true;
-
+        {
+            straightValue = 12;
+            ans = true;
+        }
         for (int i = 0; i + 4 < valsNoDups.length; i++)
             if (valsNoDups[i] + 4 == valsNoDups[i + 4])
-                return true;
-        return false;
+            {
+                straightValue = valsNoDups[i + 4];
+                ans = true;
+            }
+        return ans;
     }
 
-    private boolean threeOfAKind(int[] sortedVals)
+    private boolean threeOfAKind()
     {
+        boolean ans = false;
         for (int i = 0; i < sortedVals.length - 2; i++)
             if (sortedVals[i] == sortedVals[i + 2])
-                return true;
-        return false;
+            {
+                threeOfAKindValues[0] = sortedVals[i];
+                if (i == 4)
+                {
+                    threeOfAKindValues[1] = sortedVals[i - 1];
+                    threeOfAKindValues[2] = sortedVals[i - 2];
+                }
+                else if (i == 3)
+                {
+                    threeOfAKindValues[1] = sortedVals[i + 3];
+                    threeOfAKindValues[2] = sortedVals[i - 1];
+                }
+                else // i is less or equal 2
+                {
+                    threeOfAKindValues[1] = sortedVals[6];
+                    threeOfAKindValues[2] = sortedVals[5];
+                }
+                ans = true;
+            }
+        return ans;
     }
 
-    private boolean twoPair(int[] sortedVals)
+    private boolean twoPair()
     {
-        for (int i = 0; i < sortedVals.length - 1; i++)
+        boolean ans = false;
+        for (int i = 0; i < sortedVals.length - 3; i++)
             if (sortedVals[i] == sortedVals[i + 1])
                 for (int j = i + 2; j < sortedVals.length - 1; j++)
                     if (sortedVals[j] == sortedVals[j + 1])
-                        return true;
-        return false;
+                    {
+                        twoPairValues[0] = sortedVals[j];
+                        twoPairValues[1] = sortedVals[i];
+                        if (j < 5)
+                            twoPairValues[2] = sortedVals[6];
+                        else if (i < 3)
+                            twoPairValues[2] = sortedVals[4];
+                        else
+                            twoPairValues[2] = sortedVals[2];
+                        ans = true;
+                    }
+        return ans;
     }
 
-    private boolean pair(int[] sortedVals)
+    private boolean pair()
     {
-        for (int i = 0; i + 1 < sortedVals.length; i++)
+        boolean ans = false;
+        for (int i = 0; i < sortedVals.length - 1; i++)
             if (sortedVals[i] == sortedVals[i + 1])
-                return true;
-        return false;
+            {
+                pairValues[0] = sortedVals[i];
+                if (i == 5)
+                {
+                    pairValues[1] = sortedVals[i - 1];
+                    pairValues[2] = sortedVals[i - 2];
+                    pairValues[3] = sortedVals[i - 3];
+                }
+                else if (i == 4)
+                {
+                    pairValues[1] = sortedVals[i + 2];
+                    pairValues[2] = sortedVals[i - 1];
+                    pairValues[3] = sortedVals[i - 2];
+                }
+                else if (i == 3)
+                {
+                    pairValues[1] = sortedVals[i + 3];
+                    pairValues[2] = sortedVals[i + 2];
+                    pairValues[3] = sortedVals[i - 1];
+                }
+                else
+                {
+                    pairValues[1] = sortedVals[6];
+                    pairValues[2] = sortedVals[5];
+                    pairValues[3] = sortedVals[4];
+                }
+                ans = true;
+            }
+        return ans;
     }
 
     private int[] removeDuplicates(int[] arr)
@@ -219,5 +327,42 @@ public class Hand {
         this.card1.displayCard();
         System.out.println("Second card: ");
         this.card2.displayCard();
+    }
+
+
+    public int getStraightFlushValue() {
+        return straightFlushValue;
+    }
+
+    public int getStraightValue() {
+        return straightValue;
+    }
+
+    public int[] getfourOfAKindValues() {
+        return fourOfAKindValues;
+    }
+
+    public int[] getFullHouseValues() {
+        return fullHouseValues;
+    }
+
+    public int[] getFlushValues() {
+        return flushValues;
+    }
+
+    public int[] getThreeOfAKindValues() {
+        return threeOfAKindValues;
+    }
+
+    public int[] getTwoPairValues() {
+        return twoPairValues;
+    }
+
+    public int[] getPairValues() {
+        return pairValues;
+    }
+
+    public int[] getCardsIncludingTable() {
+        return cardsIncludingTable;
     }
 }
