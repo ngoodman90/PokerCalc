@@ -34,7 +34,8 @@ public class Table {
                     for (cardIterator[3] = cardIterator[2] + 1; cardIterator[3] < Constants.NUM_OF_CARDS_IN_DECK; cardIterator[3]++){
                         setTableCardInHands(3, hands, cardIterator);
                         for (cardIterator[4] = cardIterator[3] + 1; cardIterator[4] < Constants.NUM_OF_CARDS_IN_DECK; cardIterator[4]++) {
-                            setTableCardInHands(4, hands, cardIterator);
+                            if (!setTableCardInHands(4, hands, cardIterator))
+                                continue;
                             maxValue = 0;
                             for (Hand hand : hands)
                             {
@@ -68,17 +69,20 @@ public class Table {
 
     private int setTableCard(int cardNum)
     {
-        while (Deck.getDeck().getCard(cardNum).isUsed())
+        while (cardNum < Constants.NUM_OF_CARDS_IN_DECK && Deck.getDeck().getCard(cardNum).isUsed())
             cardNum++;
-        Deck.getDeck().getCard(cardNum).setUsed(true);
+        if (cardNum < Constants.NUM_OF_CARDS_IN_DECK)
+            Deck.getDeck().getCard(cardNum).setUsed(true);
         return cardNum;
     }
 
-    private void setTableCardInHands(int index, ArrayList<Hand> hands, int[] cardIterator)
+    private boolean setTableCardInHands(int index, ArrayList<Hand> hands, int[] cardIterator)
     {
-        cardIterator[index] = setTableCard(cardIterator[index]);
+        if ((cardIterator[index] = setTableCard(cardIterator[index])) >= Constants.NUM_OF_CARDS_IN_DECK)
+            return false;
         for (Hand hand : hands)
             hand.setTableCard(index + 2, cardIterator[index]);
+        return true;
     }
 
     public ArrayList<Hand> findBestHands(ArrayList<Integer> winningHandsIndexes, int winningHandValue)
@@ -228,10 +232,14 @@ public class Table {
     {
         long sum = 0;
         for (Hand hand : hands)
-            sum += hand.gethandsWon();
+            sum += hand.getHandsWon();
         System.out.printf("Hands played: %d\n", sum);
         long i = 0;
         for (Hand hand : hands)
-            System.out.printf("Hand number %d won %d out of %d hands.\n", ++i, hand.gethandsWon(), sum);
+        {
+            double percent = (((double)hand.getHandsWon() / (double)sum) * 100f);
+            System.out.printf("Hand number %d won %d out of %d hands.\n", ++i, hand.getHandsWon(), sum);
+            System.out.println(Math.round(percent) + "%");
+        }
     }
 }

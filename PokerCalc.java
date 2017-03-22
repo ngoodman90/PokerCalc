@@ -14,10 +14,10 @@ public class PokerCalc {
 
     public static void main(String[] args)
     {
-        initialize_hands(new Scanner(System.in));
+        initializeHands(new Scanner(System.in));
     }
 
-    public static void initialize_hands(Scanner reader)
+    public static void initializeHands(Scanner reader)
     {
         logger.setLevel(Level.INFO);
         //logger.log(Level.INFO, "Initializing hands");

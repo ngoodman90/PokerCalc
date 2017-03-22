@@ -9,6 +9,7 @@ import org.junit.Test;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.util.ArrayList;
+import java.util.Scanner;
 
 import static org.junit.Assert.assertEquals;
 
@@ -269,6 +270,13 @@ public class CalcTest {
         for (Hand winningHand : res)
             for (int i : winningHand.getCardsIncludingTable())
                 Deck.getDeck().getCard(i).displayCard();
+    }
+
+    @Test
+    public void equalHandComparison() {
+        String str1 = " 2 3 7 4\n 2 4 7 3\n\n";
+        Scanner scanner = new Scanner(str1);
+        PokerCalc.initializeHands(scanner);
     }
 
 }

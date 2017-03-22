@@ -42,7 +42,7 @@ public class Hand {
 
     public int getId() {return id;}
 
-    public long gethandsWon() {
+    public long getHandsWon() {
         return handsWon;
     }
 
