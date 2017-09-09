@@ -1,38 +1,27 @@
-import java.util.ArrayList;
-
 /**
- * Created by Noam on 7/26/2016.
+ * Created by Noam on 2017-09-09.
  */
 public class Deck {
 
-    /*
-    * This is a singleton class, since there is only one deck.
-    * This class only has one private variable, which is an array of
-    * 52 cards.
-    */
-
     private static Deck deck = new Deck();
 
-    private ArrayList<Card> cards = new ArrayList<>();
+    private Card[] cards = new Card[Constants.NUM_OF_CARDS_IN_DECK];
 
     private Deck()
     {
-        int counter = 0;
-        for (Constants.SUIT suit : Constants.SUIT.values())
+        int cardIndex = 0;
+        for (Suit s : Suit.values())
         {
-            for (int j = 0; j < 13; j++)
-                this.cards.add(new Card(((counter * 13) + j), (j + 2), suit));
-            counter++;
+            for (Rank r : Rank.values())
+            {
+                cards[cardIndex] = new Card(s,r);
+                cardIndex++;
+            }
         }
     }
-    public static Deck getDeck()
+
+    public Deck getDeck()
     {
         return deck;
     }
-
-    public ArrayList<Card> getCards() {
-        return cards;
-    }
-
-    public Card getCard(int num) {return cards.get(num);}
 }

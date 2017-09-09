@@ -15,7 +15,7 @@ import static org.junit.Assert.assertEquals;
 
 public class CalcTest {
 
-    private final Deck deck = Deck.getDeck();
+    private final Deck1 deck1 = Deck1.getDeck1();
 
     private final ByteArrayOutputStream outContent = new ByteArrayOutputStream();
 
@@ -85,7 +85,7 @@ public class CalcTest {
                 "49) Queen of clubs\n" +
                 "50) King of clubs\n" +
                 "51) Ace of clubs\n";
-        Deck.getDeck().getCards().forEach(Card::displayCard);
+        Deck1.getDeck1().getCards().forEach(Card2::displayCard);
         assertEquals(expected_string, outContent.toString());
     }*/
 
@@ -94,7 +94,7 @@ public class CalcTest {
         int[] cards = {0, 1, 2 ,3, 22, 35, 50};
         Hand hand = new Hand(cards);
         for (int i = 0; i < cards.length; i++)
-            deck.getCard(cards[i]).displayCard();
+            deck1.getCard(cards[i]).displayCard();
         int ans = hand.setHandValue();
         assertEquals(2, ans);
     }
@@ -104,7 +104,7 @@ public class CalcTest {
         int[] cards = {0, 10, 23, 30, 38, 40, 50};
         Hand hand = new Hand(cards);
         for (int i = 0; i < cards.length; i++)
-            deck.getCard(cards[i]).displayCard();
+            deck1.getCard(cards[i]).displayCard();
         int ans = hand.setHandValue();
         assertEquals(2, ans);
     }
@@ -113,7 +113,7 @@ public class CalcTest {
         int[] cards = {10, 11, 12, 15, 28, 31, 44};
         Hand hand = new Hand(cards);
         for (int i = 0; i < cards.length; i++)
-            deck.getCard(cards[i]).displayCard();
+            deck1.getCard(cards[i]).displayCard();
         int ans = hand.setHandValue();
         assertEquals(3, ans);
     }
@@ -122,7 +122,7 @@ public class CalcTest {
         int[] cards = {7, 19, 32, 31, 38, 41, 44};
         Hand hand = new Hand(cards);
         for (int i = 0; i < cards.length; i++)
-            deck.getCard(cards[i]).displayCard();
+            deck1.getCard(cards[i]).displayCard();
         int ans = hand.setHandValue();
         assertEquals(3, ans);
     }
@@ -131,7 +131,7 @@ public class CalcTest {
         int[] cards = {12, 25, 38, 45, 46, 47, 48};
         Hand hand = new Hand(cards);
         for (int i = 0; i < cards.length; i++)
-            deck.getCard(cards[i]).displayCard();
+            deck1.getCard(cards[i]).displayCard();
         int ans = hand.setHandValue();
         assertEquals(4, ans);
     }
@@ -140,7 +140,7 @@ public class CalcTest {
         int[] cards = {6, 19, 32, 35, 38, 41, 44};
         Hand hand = new Hand(cards);
         for (int i = 0; i < cards.length; i++)
-            deck.getCard(cards[i]).displayCard();
+            deck1.getCard(cards[i]).displayCard();
         int ans = hand.setHandValue();
         assertEquals(4, ans);
     }
@@ -149,7 +149,7 @@ public class CalcTest {
         int[] cards = {6, 19, 32, 35, 38, 41, 44};
         Hand hand = new Hand(cards);
         for (int i = 0; i < cards.length; i++)
-            deck.getCard(cards[i]).displayCard();
+            deck1.getCard(cards[i]).displayCard();
         int ans = hand.setHandValue();
         assertEquals(4, ans);
     }
@@ -158,7 +158,7 @@ public class CalcTest {
         int[] cards = {0, 13, 26, 6, 19, 27, 34};
         Hand hand = new Hand(cards);
         for (int i = 0; i < cards.length; i++)
-            deck.getCard(cards[i]).displayCard();
+            deck1.getCard(cards[i]).displayCard();
         int ans = hand.setHandValue();
         assertEquals(ans, 7);
     }
@@ -167,7 +167,7 @@ public class CalcTest {
         int[] cards = {7, 20, 33, 16, 42, 43, 1};
         Hand hand = new Hand(cards);
         for (int i = 0; i < cards.length; i++)
-            deck.getCard(cards[i]).displayCard();
+            deck1.getCard(cards[i]).displayCard();
         int ans = hand.setHandValue();
         assertEquals(ans, 7);
     }@Test
@@ -175,7 +175,7 @@ public class CalcTest {
         int[] cards = {1, 14, 27, 40, 22, 37, 46};
         Hand hand = new Hand(cards);
         for (int i = 0; i < cards.length; i++)
-            deck.getCard(cards[i]).displayCard();
+            deck1.getCard(cards[i]).displayCard();
         int ans = hand.setHandValue();
         assertEquals(ans, 8);
     }
@@ -184,7 +184,7 @@ public class CalcTest {
         int[] cards = {12, 25, 38, 51, 1, 7, 29};
         Hand hand = new Hand(cards);
         for (int i = 0; i < cards.length; i++)
-            deck.getCard(cards[i]).displayCard();
+            deck1.getCard(cards[i]).displayCard();
         int ans = hand.setHandValue();
         assertEquals(8, ans);
     }
@@ -193,7 +193,7 @@ public class CalcTest {
         int[] cards = {3, 30, 12, 44, 29, 19, 46};
         Hand hand = new Hand(cards);
         for (int i = 0; i < cards.length; i++)
-            deck.getCard(cards[i]).displayCard();
+            deck1.getCard(cards[i]).displayCard();
         int ans = hand.setHandValue();
         assertEquals(5, ans);
     }
@@ -202,7 +202,7 @@ public class CalcTest {
         int[] cards = {51, 13, 25, 42, 2, 40, 1};
         Hand hand = new Hand(cards);
         for (int i = 0; i < cards.length; i++)
-            deck.getCard(cards[i]).displayCard();
+            deck1.getCard(cards[i]).displayCard();
         int ans = hand.setHandValue();
         assertEquals(5, ans);
     }
@@ -211,7 +211,7 @@ public class CalcTest {
         int[] cards = {13, 16, 19, 0, 3, 21, 22};
         Hand hand = new Hand(cards);
         for (int i = 0; i < cards.length; i++)
-            deck.getCard(cards[i]).displayCard();
+            deck1.getCard(cards[i]).displayCard();
         int ans = hand.setHandValue();
         assertEquals(6, ans);
     }
@@ -220,7 +220,7 @@ public class CalcTest {
         int[] cards = {35, 30, 31, 10, 50, 26, 28};
         Hand hand = new Hand(cards);
         for (int i = 0; i < cards.length; i++)
-            deck.getCard(cards[i]).displayCard();
+            deck1.getCard(cards[i]).displayCard();
         int ans = hand.setHandValue();
         assertEquals(6, ans);
     }
@@ -229,7 +229,7 @@ public class CalcTest {
         int[] cards = {38, 28, 48, 29, 26, 49, 27};
         Hand hand = new Hand(cards);
         for (int i = 0; i < cards.length; i++)
-            deck.getCard(cards[i]).displayCard();
+            deck1.getCard(cards[i]).displayCard();
         int ans = hand.setHandValue();
         assertEquals(9, ans);
     }
@@ -238,7 +238,7 @@ public class CalcTest {
         int[] cards = {18, 17, 19, 22, 21, 30, 20};
         Hand hand = new Hand(cards);
         for (int i = 0; i < cards.length; i++)
-            deck.getCard(cards[i]).displayCard();
+            deck1.getCard(cards[i]).displayCard();
         int ans = hand.setHandValue();
         assertEquals(9, ans);
     }
@@ -247,7 +247,7 @@ public class CalcTest {
         int[] cards = {47, 20, 48, 51, 2, 50, 49};
         Hand hand = new Hand(cards);
         for (int i = 0; i < cards.length; i++)
-            deck.getCard(cards[i]).displayCard();
+            deck1.getCard(cards[i]).displayCard();
         int ans = hand.setHandValue();
         assertEquals(10, ans);
     }
@@ -269,7 +269,7 @@ public class CalcTest {
         res = Table.getTable().findBestHands(winningHandsIndexes, 2);
         for (Hand winningHand : res)
             for (int i : winningHand.getCardsIncludingTable())
-                Deck.getDeck().getCard(i).displayCard();
+                Deck1.getDeck1().getCard(i).displayCard();
     }
 
     @Test

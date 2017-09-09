@@ -68,13 +68,13 @@ public class PokerCalc {
         */
         int first_card = userCardNumber(hand_scanner.nextInt(), hand_scanner.nextInt());
         int second_card = userCardNumber(hand_scanner.nextInt(), hand_scanner.nextInt());
-        return new Hand(index, Deck.getDeck().getCard(first_card), Deck.getDeck().getCard(second_card));
+        return new Hand(index, Deck1.getDeck1().getCard(first_card), Deck1.getDeck1().getCard(second_card));
     }
 
     public static int userCardNumber(int val, int suit)
     {
     	//TODO make function understandable
-    	Deck.getDeck().getCard(((suit - 1) * 13) +  (val - 2)).setUsed(true);
+    	Deck1.getDeck1().getCard(((suit - 1) * 13) +  (val - 2)).setUsed(true);
         return (((suit - 1) * 13) +  (val - 2));
     }
 }

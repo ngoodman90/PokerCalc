@@ -8,8 +8,8 @@ import static java.util.Arrays.sort;
 public class Hand {
 
     private int id;
-    private Card card1;
-    private Card card2;
+    private Card2 card21;
+    private Card2 card22;
     private int currentHandValue = 0;
     private long handsWon = 0;
 
@@ -26,13 +26,13 @@ public class Hand {
     private int[] twoPairValues = new int[3];
     private int[] pairValues = new int[4];
 
-    Hand(int id, Card card1, Card card2) {
+    Hand(int id, Card2 card21, Card2 card22) {
         this.id = id;
-        this.card1 = card1;
-        this.card2 = card2;
+        this.card21 = card21;
+        this.card22 = card22;
         cardsIncludingTable = new int[7];
-        cardsIncludingTable[0] = card1.getCardNumber();
-        cardsIncludingTable[1] = card2.getCardNumber();
+        cardsIncludingTable[0] = card21.getCardNumber();
+        cardsIncludingTable[1] = card22.getCardNumber();
     }
 
     Hand(int[] cardsIncludingTable)
@@ -87,7 +87,7 @@ public class Hand {
     public int setHandValue()
     {
         /*Hand Values:
-        *  1: High Card
+        *  1: High Card2
         *  2: Pair
         *  3: Two Pair
         *  4: Three of a Kind
@@ -324,9 +324,9 @@ public class Hand {
     public void displayHand()
     {
         System.out.println("First card: ");
-        this.card1.displayCard();
+        this.card21.displayCard();
         System.out.println("Second card: ");
-        this.card2.displayCard();
+        this.card22.displayCard();
     }
 
 

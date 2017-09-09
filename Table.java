@@ -23,6 +23,7 @@ public class Table {
         ArrayList<Integer> winningHandsIndexes = new ArrayList<>();
         ArrayList<Hand> winningHands = new ArrayList<>();
         int maxValue;
+        int handCounter = 0;
         int[] cardIterator = new int[5];
 
         for (cardIterator[0] = 0; cardIterator[0] < Constants.NUM_OF_CARDS_IN_DECK; cardIterator[0]++) {
@@ -36,6 +37,7 @@ public class Table {
                         for (cardIterator[4] = cardIterator[3] + 1; cardIterator[4] < Constants.NUM_OF_CARDS_IN_DECK; cardIterator[4]++) {
                             if (!setTableCardInHands(4, hands, cardIterator))
                                 continue;
+                            handCounter++;
                             maxValue = 0;
                             for (Hand hand : hands)
                             {
@@ -54,25 +56,44 @@ public class Table {
                                 winningHands = findBestHands(winningHandsIndexes, maxValue);
                             if (winningHands.size() < hands.size())
                                 winningHands.forEach(winningHand -> winningHand.incrementHandsWon());
-                            Deck.getDeck().getCard(cardIterator[4]).setUsed(false);
+                            Deck1.getDeck1().getCard(cardIterator[4]).setUsed(false);
                         }
-                        Deck.getDeck().getCard(cardIterator[3]).setUsed(false);
+                        Deck1.getDeck1().getCard(cardIterator[3]).setUsed(false);
                     }
-                    Deck.getDeck().getCard(cardIterator[2]).setUsed(false);
+                    Deck1.getDeck1().getCard(cardIterator[2]).setUsed(false);
                 }
-                Deck.getDeck().getCard(cardIterator[1]).setUsed(false);
+                Deck1.getDeck1().getCard(cardIterator[1]).setUsed(false);
             }
-            Deck.getDeck().getCard(cardIterator[0]).setUsed(false);
+            Deck1.getDeck1().getCard(cardIterator[0]).setUsed(false);
         }
+        System.out.println("Hand Counter :" + handCounter);
         printStatistics(hands);
     }
 
+    public void recursiveTableGenerator(int[] tableCards, int positionIndex, int cardIndex)
+    {
+        if (positionIndex == 5)
+            analyzeTable();
+        else if (cardIndex >= Constants.NUM_OF_CARDS_IN_DECK)
+            return ;
+        for (tableCards[positionIndex] = tableCards[positionIndex - 1] + 1;
+             tableCards[positionIndex] < Constants.NUM_OF_CARDS_IN_DECK;
+             tableCards[positionIndex]++)
+        {
+            if (Deck1.isUsed(cardIndex))
+                continue;
+            recursiveTableGenerator(tableCards, positionIndex + 1, cardIndex + 1);
+        }
+    }
+
+
+
     private int setTableCard(int cardNum)
     {
-        while (cardNum < Constants.NUM_OF_CARDS_IN_DECK && Deck.getDeck().getCard(cardNum).isUsed())
+        while (cardNum < Constants.NUM_OF_CARDS_IN_DECK && Deck1.getDeck1().getCard(cardNum).isUsed())
             cardNum++;
         if (cardNum < Constants.NUM_OF_CARDS_IN_DECK)
-            Deck.getDeck().getCard(cardNum).setUsed(true);
+            Deck1.getDeck1().getCard(cardNum).setUsed(true);
         return cardNum;
     }
 
@@ -94,7 +115,7 @@ public class Table {
             winningHands.add(hands.get(i));
         switch (winningHandValue)
         {
-            case 1://High Card
+            case 1://High Card2
                 for (int i = 6; i > 1; i--)
                 {
                     maxVal = 0;
