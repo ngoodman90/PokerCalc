@@ -20,11 +20,11 @@ public class PokerCalc {
     public static void initializeHands(Scanner reader)
     {
         logger.setLevel(Level.INFO);
-        //logger.log(Level.INFO, "Initializing hands");
+        logger.log(Level.INFO, "Initializing hands");
 
         ArrayList<Hand> hands = new ArrayList<>();
         while (true) {
-            System.out.println("Enter a hand:");
+            logger.log(Level.INFO, "Enter a hand:");
             String hand_string = reader.nextLine();
             if (hand_string.equals(""))
                 break;
@@ -34,13 +34,13 @@ public class PokerCalc {
                     hands.add(parseHand(hands.size(), hand_string));
                 else
                 {
-                    System.out.println("No more hands allowed\n");
+                    logger.log(Level.INFO, "No more hands allowed");
                     break;
                 }
             }
         }
         displayHands(hands);
-        //logger.log(Level.INFO, "Number of hands: %d", hands.size());
+        logger.log(Level.INFO, "Number of hands: %d", hands.size());
         Table.getTable().setTableHands(hands);
         Table.getTable().startCalculation();
     }
@@ -49,7 +49,7 @@ public class PokerCalc {
     {
         for (int i = 0; i < hands.size(); i++)
         {
-            System.out.printf("Hand number %d:\n", i + 1);
+            logger.log(Level.INFO, "Hand number %d:\n", i + 1);
             hands.get(i).displayHand();
         }
     }

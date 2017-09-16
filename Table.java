@@ -1,4 +1,7 @@
 import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+
 /**
  * Created by Noam on 7/27/2016.
  */
@@ -70,6 +73,34 @@ public class Table {
         printStatistics(hands);
     }
 
+    public List<Hand> getWinningHands()
+    {
+        HandValueEnum maxValue;
+        HandValueEnum currentHandValueEnum;
+        List<Hand> winningHands = new LinkedList<>();
+
+        maxValue = HandValueEnum.HIGH_CARD;
+
+        for (Hand hand : hands)
+        {
+            currentHandValueEnum = hand.getHandValue();
+            hand.setCurrentHandValue(currentHandValueEnum);
+
+            if (currentHandValueEnum.getValue() > maxValue.getValue())
+            {
+                maxValue = currentHandValueEnum;
+                winningHands = new LinkedList<>();
+                winningHands.add(hand);
+            }
+
+            if (currentHandValueEnum.getValue() == maxValue.getValue())
+            {
+                winningHands.add(hand);
+            }
+        }
+        return winningHands;
+    }
+
     public void recursiveTableGenerator(int[] tableCards, int positionIndex, int cardIndex)
     {
         if (positionIndex == 5)
@@ -104,6 +135,14 @@ public class Table {
         for (Hand hand : hands)
             hand.setTableCard(index + 2, cardIterator[index]);
         return true;
+    }
+
+    public void setTableCardsInHands(int[] tableCards)
+    {
+        for (Hand hand : hands)
+        {
+            hand.setTableCards(tableCards);
+        }
     }
 
     public ArrayList<Hand> findBestHands(ArrayList<Integer> winningHandsIndexes, int winningHandValue)

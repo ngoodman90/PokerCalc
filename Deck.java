@@ -1,3 +1,5 @@
+import java.util.ArrayList;
+
 /**
  * Created by Noam on 2017-09-09.
  */
@@ -5,17 +7,15 @@ public class Deck {
 
     private static Deck deck = new Deck();
 
-    private Card[] cards = new Card[Constants.NUM_OF_CARDS_IN_DECK];
+    private ArrayList<Card> cards = new ArrayList<>(Constants.NUM_OF_CARDS_IN_DECK);
 
     private Deck()
     {
-        int cardIndex = 0;
-        for (Suit s : Suit.values())
+        for (SuitEnum s : SuitEnum.values())
         {
-            for (Rank r : Rank.values())
+            for (RankEnum r : RankEnum.values())
             {
-                cards[cardIndex] = new Card(s,r);
-                cardIndex++;
+                cards.add(new Card(s,r));
             }
         }
     }

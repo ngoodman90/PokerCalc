@@ -4,11 +4,11 @@
 
 public class Card {
 
-    private Suit    suit;
-    private Rank    rank;
+    private SuitEnum suit;
+    private RankEnum rank;
     private boolean used;
 
-    public Card(Suit suit, Rank rank)
+    public Card(SuitEnum suit, RankEnum rank)
     {
         this.suit = suit;
         this.rank = rank;
@@ -27,7 +27,7 @@ public class Card {
 
     public String toString()
     {
-        return String.format("Suit: %s, Rank: %s", suit.toString(), rank.toString());
+        return String.format("SuitEnum: %s, RankEnum: %s\n", suit.toString(), rank.toString());
     }
 }
 

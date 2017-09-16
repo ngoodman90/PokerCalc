@@ -8,9 +8,9 @@ import static java.util.Arrays.sort;
 public class Hand {
 
     private int id;
-    private Card2 card21;
-    private Card2 card22;
-    private int currentHandValue = 0;
+    private Card card1;
+    private Card card2;
+    private HandValueEnum currentHandValue;
     private long handsWon = 0;
 
     private int[] cardsIncludingTable;
@@ -26,13 +26,13 @@ public class Hand {
     private int[] twoPairValues = new int[3];
     private int[] pairValues = new int[4];
 
-    Hand(int id, Card2 card21, Card2 card22) {
+    Hand(int id, Card card1, Card card2) {
         this.id = id;
-        this.card21 = card21;
-        this.card22 = card22;
+        this.card1 = card1;
+        this.card2 = card2;
         cardsIncludingTable = new int[7];
-        cardsIncludingTable[0] = card21.getCardNumber();
-        cardsIncludingTable[1] = card22.getCardNumber();
+        cardsIncludingTable[0] = card1.getValue();
+        cardsIncludingTable[1] = card2.getValue();
     }
 
     Hand(int[] cardsIncludingTable)
@@ -50,10 +50,13 @@ public class Hand {
         this.handsWon++;
     }
 
-    public int getCurrentHandValue() {
-        return currentHandValue;
+    public void setTableCards(int[] tableCards)
+    {
+        for (int i = Constants.NUM_OF_PLAYER_CARDS; i < Constants.NUM_OF_CARDS_WITH_TABLE; i++)
+        {
+            cardsIncludingTable[i] = tableCards[i - Constants.NUM_OF_PLAYER_CARDS];
+        }
     }
-
     public void setTableCard(int index, int cardNumber)
     {
         if (2 <= index && index <= 6)
@@ -84,10 +87,10 @@ public class Hand {
         sort(sortedVals);        
     }
 
-    public int setHandValue()
+    public HandValueEnum getHandValue()
     {
         /*Hand Values:
-        *  1: High Card2
+        *  1: High card
         *  2: Pair
         *  3: Two Pair
         *  4: Three of a Kind
@@ -98,23 +101,39 @@ public class Hand {
         *  9: Straight Flush
         * 10: Royal Flush
         * */
-        int ans1, ans2;
+        HandValueEnum ans1, ans2;
+
         setSortedCards();
         setSortedVals();
+
         ans1 = (pair() ?
                 (threeOfAKind() ?
-                        (fourOfAKind() ? 8 :
-                                (fullHouse() ? 7 : 4)) :
-                        twoPair() ? 3 : 2)
-                : 1);//high card
+                        (fourOfAKind() ? HandValueEnum.FOUR_OF_A_KIND :
+                                (fullHouse() ? HandValueEnum.FULL_HOUSE :
+                                        HandValueEnum.THREE_OF_A_KIND)) :
+                        twoPair() ? HandValueEnum.TWO_PAIR :
+                                HandValueEnum.PAIR)
+                : HandValueEnum.HIGH_CARD);
 
         ans2 = (flush() ?
                 (straightFlush() ?
-                        (royalFlush() ? 10 : 9)//royal or straight flush
-                        : 6)//flush
-                : (straight() ? 5 : 0));//Straight or nothing
-        currentHandValue =  (ans1 > ans2 ? ans1 : ans2);
+                        (royalFlush() ? HandValueEnum.ROYAL_FLUSH :
+                                HandValueEnum.STRAIGHT_FLUSH)
+                        : HandValueEnum.FLUSH)
+                : (straight() ? HandValueEnum.STRAIGHT :
+                HandValueEnum.HIGH_CARD));
+
+        return ans1.getValue() > ans2.getValue() ? ans1 : ans2;
+    }
+
+    public HandValueEnum getCurrentHandValue()
+    {
         return currentHandValue;
+    }
+
+    public void setCurrentHandValue(HandValueEnum currentHandValue)
+    {
+        this.currentHandValue = currentHandValue;
     }
 
     private boolean royalFlush()
@@ -321,14 +340,10 @@ public class Hand {
                 .toArray();
     }
 
-    public void displayHand()
+    public String toString()
     {
-        System.out.println("First card: ");
-        this.card21.displayCard();
-        System.out.println("Second card: ");
-        this.card22.displayCard();
+        return String.format("First card: %s, Second card: %s\n", card1.toString(), card2.toString());
     }
-
 
     public int getStraightFlushValue() {
         return straightFlushValue;

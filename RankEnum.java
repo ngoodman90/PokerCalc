@@ -1,7 +1,7 @@
 /**
  * Created by Noam on 2017-09-09.
  */
-public enum Rank {
+public enum RankEnum {
     TWO(1),
     THREE(2),
     FOUR(3),
@@ -18,7 +18,7 @@ public enum Rank {
 
     private final int value;
 
-    Rank(int value) {
+    RankEnum(int value) {
         this.value  = value;
     }
 
