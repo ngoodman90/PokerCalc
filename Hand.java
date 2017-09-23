@@ -7,30 +7,26 @@ import static java.util.Arrays.sort;
  */
 public class Hand {
 
+    //TODO the following functions dont find the biggest, only the first
+
+    //
+
     private int id;
-    private Card card1;
-    private Card card2;
+    private Card[] cards = new Card[Constants.NUM_OF_PLAYER_CARDS];
     private HandValueEnum currentHandValue;
     private long handsWon = 0;
 
-    private int[] cardsIncludingTable;
-    private int[] sortedCards;
-    private int[] sortedVals;
+    private int[] cardsIncludingTable = new int[Constants.NUM_OF_CARDS_WITH_TABLE];
+    private int[] sortedCards = new int[Constants.NUM_OF_CARDS_WITH_TABLE];
+    private int[] sortedVals = new int[Constants.NUM_OF_CARDS_WITH_TABLE];
 
-    private int straightValue;
-    private int straightFlushValue;
-    private int[] flushValues = new int[5];
-    private int[] fourOfAKindValues = new int[2];
-    private int[] fullHouseValues = new int[2];
-    private int[] threeOfAKindValues = new int[3];
-    private int[] twoPairValues = new int[3];
-    private int[] pairValues = new int[4];
+    private int[] bestCardValues;
 
-    Hand(int id, Card card1, Card card2) {
+    Hand(int id, Card card1, Card card2)
+    {
         this.id = id;
-        this.card1 = card1;
-        this.card2 = card2;
-        cardsIncludingTable = new int[7];
+        this.cards[0] = card1;
+        this.cards[1] = card2;
         cardsIncludingTable[0] = card1.getValue();
         cardsIncludingTable[1] = card2.getValue();
     }
@@ -68,21 +64,18 @@ public class Hand {
         }
     }
 
-    public int[] getSortedCards() {return sortedCards;}
-
     public int[] getSortedVals() {return sortedVals;}
 
     public void setSortedCards()
     {
         sortedCards = new int[Constants.NUM_OF_CARDS_WITH_TABLE];
-        for (int i = 0; i < Constants.NUM_OF_CARDS_WITH_TABLE; i++)
-            sortedCards[i] = cardsIncludingTable[i];
+        System.arraycopy(cardsIncludingTable, 0, sortedCards, 0, cardsIncludingTable.length);
         sort(sortedCards);
     }
 
-    public void setSortedVals() {
-        sortedVals = new int[Constants.NUM_OF_CARDS_WITH_TABLE];
-        for (int i = 0; i < Constants.NUM_OF_CARDS_WITH_TABLE; i++)
+    public void setSortedVals()
+    {
+        for (int i = 0; i < cardsIncludingTable.length; i++)
             sortedVals[i] = cardsIncludingTable[i] % Constants.NUM_OF_CARDS_IN_SUIT;
         sort(sortedVals);        
     }
@@ -126,6 +119,8 @@ public class Hand {
         return ans1.getValue() > ans2.getValue() ? ans1 : ans2;
     }
 
+
+
     public HandValueEnum getCurrentHandValue()
     {
         return currentHandValue;
@@ -138,199 +133,236 @@ public class Hand {
 
     private boolean royalFlush()
     {
-        boolean ans = false;
         for (int i = 0; i < 3; i++)
-            if ((sortedCards[i] % Constants.NUM_OF_CARDS_IN_SUIT == 8) //first of 5 cards is a 10
-                    && (sortedCards[i + 4] % Constants.NUM_OF_CARDS_IN_SUIT == 12) // last of 5 cards is an A
-                    && (sortedCards[i] / Constants.NUM_OF_CARDS_IN_SUIT == sortedCards[i + 4] / Constants.NUM_OF_CARDS_IN_SUIT)) // All five cards are in the same suit
-                ans  = true;
-        return ans;
+            if (sortedCards[i] % Constants.NUM_OF_CARDS_IN_SUIT == RankEnum.TEN.getValue()
+                    && sortedCards[i + 4] % Constants.NUM_OF_CARDS_IN_SUIT == RankEnum.ACE.getValue()
+                    && sameSuit(sortedCards[i], sortedCards[i + 4]))
+                return true;
+        return false;
     }
 
     private boolean straightFlush()
     {
-        boolean ans = false;
         //if there is an A, and the fourth card is a 5 of the same suit, then we have a straight flush
         for (int i = 0; i < sortedCards.length; i++)
-            if (sortedCards[i] % Constants.NUM_OF_CARDS_IN_SUIT  == 12) {
-                for (int j = 0; j < 4; j++)
-                    if ((sortedCards[j] + 3 == sortedCards[j + 3])
-                            && (sortedCards[j] % Constants.NUM_OF_CARDS_IN_SUIT == 0)
-                            && sortedCards[j] / Constants.NUM_OF_CARDS_IN_SUIT == sortedCards[i] / Constants.NUM_OF_CARDS_IN_SUIT) {
-                        straightFlushValue = 12;
-                        ans = true;
-                    }
-            }
-        for (int i = 0; i < 3; i++)
-            if ((sortedCards[i] + 4 == sortedCards[i + 4])
-                    && (sortedCards[i] / Constants.NUM_OF_CARDS_IN_SUIT == sortedCards[i + 4] / Constants.NUM_OF_CARDS_IN_SUIT))
+        {
+            if (sortedCards[i] % Constants.NUM_OF_CARDS_IN_SUIT == RankEnum.ACE.getValue())
             {
-                straightFlushValue = sortedCards[i + 4];
-                ans = true;
+                for (int j = 0; j < 4; j++)
+                {
+                    if ((sortedCards[j] + 3 == sortedCards[j + 3])
+                            && (sortedCards[j] % Constants.NUM_OF_CARDS_IN_SUIT == RankEnum.TWO.getValue())
+                            && sortedCards[j] / Constants.NUM_OF_CARDS_IN_SUIT == sortedCards[i] / Constants.NUM_OF_CARDS_IN_SUIT)//Two and Ace are same suit
+                    {
+                        bestCardValues = new int[1];
+                        bestCardValues[0] = RankEnum.FIVE.getValue();
+                        return true;
+                    }
+                }
             }
-        return ans;
+        }
+        for (int i = 0; i < 3; i++)
+        {
+            if (sortedCards[i] + 4 == sortedCards[i + 4]
+                    && sameSuit(sortedCards[i], sortedCards[i + 4]))
+            {
+                bestCardValues = new int[1];
+                bestCardValues[0] = sortedCards[i + 4];
+                return true;
+            }
+        }
+        for (int i = 0; i < 3; i++)
+        {
+            if (sortedCards[i] % Constants.NUM_OF_CARDS_IN_SUIT == RankEnum.TWO.getValue()
+                && (sortedCards[i + 3] % Constants.NUM_OF_CARDS_IN_SUIT == RankEnum.FIVE.getValue())
+                && (sortedCards[i] / Constants.NUM_OF_CARDS_IN_SUIT == sortedCards[i + 3] / Constants.NUM_OF_CARDS_IN_SUIT))
+                return false;
+            //TODO fix this!!! Doesnt check for ace at the end
+        }
+        return false;
     }
 
     private boolean fourOfAKind() {
-        boolean ans = false;
         for (int i = 0; i < 4; i++)
+        {
             if (sortedVals[i] == sortedVals[i + 3])
             {
-                fourOfAKindValues[0] = sortedVals[i];
+                bestCardValues = new int[2];
+                bestCardValues[0] = sortedVals[i];
                 if (i == 3)
-                    fourOfAKindValues[1] = sortedVals[i - 1];
+                {
+                    bestCardValues[1] = sortedVals[i - 1];
+                }
                 else
-                    fourOfAKindValues[1] = sortedVals[6];
-                ans = true;
+                {
+                    bestCardValues[1] = sortedVals[6];
+                }
+                return true;
             }
-
-        return ans;
+        }
+        return false;
     }
 
     private boolean fullHouse()
     {
-        boolean ans = false;
         for (int i = 0; i < 3; i++)
         {
             if (sortedVals[i] == sortedVals[i + 2])
+            {
                 for (int j = i + 3; j < sortedVals.length - 1; j++)
+                {
                     if (sortedVals[j] == sortedVals[j + 1])
                     {
-                        fullHouseValues[0] = sortedVals[i];
-                        fullHouseValues[1] = sortedVals[j];
-                        ans = true;
+                        bestCardValues = new int[2];
+                        bestCardValues[0] = sortedVals[i];
+                        bestCardValues[1] = sortedVals[j];
+                        return true;
                     }
+                }
+            }
             if (sortedVals[i] == sortedVals[i + 1])
+            {
                 for (int j = i + 2; j < sortedVals.length - 2; j++)
+                {
                     if (sortedVals[j] == sortedVals[j + 2])
                     {
-                        fullHouseValues[0] = sortedVals[j];
-                        fullHouseValues[1] = sortedVals[i];
-                        ans = true;
+                        bestCardValues = new int[2];
+                        bestCardValues[0] = sortedVals[j];
+                        bestCardValues[1] = sortedVals[i];
+                        return true;
                     }
+                }
+            }
         }
-        return ans;
+        return false;
     }
 
     private boolean flush()
     {
-        boolean ans = false;
-        int suitOfFirstCard, suitOfFifthCard;
         for (int i = 0; i < 3; i++)
         {
-            suitOfFirstCard = sortedCards[i] / Constants.NUM_OF_CARDS_IN_SUIT;
-            suitOfFifthCard = sortedCards[i + 4] / Constants.NUM_OF_CARDS_IN_SUIT;
-            if (suitOfFirstCard == suitOfFifthCard)
+            if (sameSuit(sortedCards[i], sortedCards[i + 4]))
             {
-                for (int j = 0; j < 5; j++)
-                    flushValues[j] = sortedCards[i + 4 - j];
-                ans = true;
+                bestCardValues = new int[5];
+                System.arraycopy(sortedCards, i, bestCardValues, 0, bestCardValues.length);
+                return true;
             }
         }
-        return ans;
+        return false;
     }
 
     private boolean straight()
     {
-        boolean ans = false;
         int[] valsNoDups = removeDuplicates(sortedVals);
         //if there is an A, and the fourth card is a 5, then we have a straight
-        if (valsNoDups.length >= 5 && valsNoDups[3] == 3 && valsNoDups[valsNoDups.length - 1] == 12)
+        if (valsNoDups.length >= Constants.NUM_OF_TABLE_CARDS
+                && valsNoDups[3] == RankEnum.FIVE.getValue()
+                && valsNoDups[valsNoDups.length - 1] == RankEnum.ACE.getValue())
         {
-            straightValue = 12;
-            ans = true;
+            bestCardValues = new int[1];
+            bestCardValues[0] = valsNoDups[3];
+            return true;
         }
+
         for (int i = 0; i + 4 < valsNoDups.length; i++)
+        {
             if (valsNoDups[i] + 4 == valsNoDups[i + 4])
             {
-                straightValue = valsNoDups[i + 4];
-                ans = true;
+                bestCardValues = new int[1];
+                bestCardValues[0] = valsNoDups[i + 4];
+                return true;
             }
-        return ans;
+        }
+        return false;
     }
 
     private boolean threeOfAKind()
     {
-        boolean ans = false;
         for (int i = 0; i < sortedVals.length - 2; i++)
+        {
             if (sortedVals[i] == sortedVals[i + 2])
             {
-                threeOfAKindValues[0] = sortedVals[i];
+                bestCardValues = new int[3];
+                bestCardValues[0] = sortedVals[i];
                 if (i == 4)
                 {
-                    threeOfAKindValues[1] = sortedVals[i - 1];
-                    threeOfAKindValues[2] = sortedVals[i - 2];
-                }
-                else if (i == 3)
+                    bestCardValues[1] = sortedVals[i - 1];
+                    bestCardValues[2] = sortedVals[i - 2];
+                } else if (i == 3)
                 {
-                    threeOfAKindValues[1] = sortedVals[i + 3];
-                    threeOfAKindValues[2] = sortedVals[i - 1];
-                }
-                else // i is less or equal 2
+                    bestCardValues[1] = sortedVals[i + 3];
+                    bestCardValues[2] = sortedVals[i - 1];
+                } else // i is less or equal 2
                 {
-                    threeOfAKindValues[1] = sortedVals[6];
-                    threeOfAKindValues[2] = sortedVals[5];
+                    bestCardValues[1] = sortedVals[6];
+                    bestCardValues[2] = sortedVals[5];
                 }
-                ans = true;
+                return true;
             }
-        return ans;
+        }
+        return false;
     }
 
     private boolean twoPair()
     {
-        boolean ans = false;
         for (int i = 0; i < sortedVals.length - 3; i++)
+        {
             if (sortedVals[i] == sortedVals[i + 1])
+            {
                 for (int j = i + 2; j < sortedVals.length - 1; j++)
+                {
                     if (sortedVals[j] == sortedVals[j + 1])
                     {
-                        twoPairValues[0] = sortedVals[j];
-                        twoPairValues[1] = sortedVals[i];
+                        bestCardValues = new int[3];
+                        bestCardValues[0] = sortedVals[j];
+                        bestCardValues[1] = sortedVals[i];
                         if (j < 5)
-                            twoPairValues[2] = sortedVals[6];
+                            bestCardValues[2] = sortedVals[6];
                         else if (i < 3)
-                            twoPairValues[2] = sortedVals[4];
+                            bestCardValues[2] = sortedVals[4];
                         else
-                            twoPairValues[2] = sortedVals[2];
-                        ans = true;
+                            bestCardValues[2] = sortedVals[2];
+                        return true;
                     }
-        return ans;
+                }
+            }
+        }
+        return false;
     }
 
     private boolean pair()
     {
-        boolean ans = false;
         for (int i = 0; i < sortedVals.length - 1; i++)
+        {
             if (sortedVals[i] == sortedVals[i + 1])
             {
-                pairValues[0] = sortedVals[i];
+                bestCardValues = new int[4];
+                bestCardValues[0] = sortedVals[i];
                 if (i == 5)
                 {
-                    pairValues[1] = sortedVals[i - 1];
-                    pairValues[2] = sortedVals[i - 2];
-                    pairValues[3] = sortedVals[i - 3];
-                }
-                else if (i == 4)
+                    bestCardValues[1] = sortedVals[i - 1];
+                    bestCardValues[2] = sortedVals[i - 2];
+                    bestCardValues[3] = sortedVals[i - 3];
+                } else if (i == 4)
                 {
-                    pairValues[1] = sortedVals[i + 2];
-                    pairValues[2] = sortedVals[i - 1];
-                    pairValues[3] = sortedVals[i - 2];
-                }
-                else if (i == 3)
+                    bestCardValues[1] = sortedVals[i + 2];
+                    bestCardValues[2] = sortedVals[i - 1];
+                    bestCardValues[3] = sortedVals[i - 2];
+                } else if (i == 3)
                 {
-                    pairValues[1] = sortedVals[i + 3];
-                    pairValues[2] = sortedVals[i + 2];
-                    pairValues[3] = sortedVals[i - 1];
-                }
-                else
+                    bestCardValues[1] = sortedVals[i + 3];
+                    bestCardValues[2] = sortedVals[i + 2];
+                    bestCardValues[3] = sortedVals[i - 1];
+                } else
                 {
-                    pairValues[1] = sortedVals[6];
-                    pairValues[2] = sortedVals[5];
-                    pairValues[3] = sortedVals[4];
+                    bestCardValues[1] = sortedVals[6];
+                    bestCardValues[2] = sortedVals[5];
+                    bestCardValues[3] = sortedVals[4];
                 }
-                ans = true;
+                return true;
             }
-        return ans;
+        }
+        return false;
     }
 
     private int[] removeDuplicates(int[] arr)
@@ -340,44 +372,22 @@ public class Hand {
                 .toArray();
     }
 
+    private boolean sameSuit(int card1, int card2)
+    {
+        return card1 / Constants.NUM_OF_CARDS_IN_SUIT == card2 / Constants.NUM_OF_CARDS_IN_SUIT;
+    }
+
     public String toString()
     {
-        return String.format("First card: %s, Second card: %s\n", card1.toString(), card2.toString());
-    }
-
-    public int getStraightFlushValue() {
-        return straightFlushValue;
-    }
-
-    public int getStraightValue() {
-        return straightValue;
-    }
-
-    public int[] getfourOfAKindValues() {
-        return fourOfAKindValues;
-    }
-
-    public int[] getFullHouseValues() {
-        return fullHouseValues;
-    }
-
-    public int[] getFlushValues() {
-        return flushValues;
-    }
-
-    public int[] getThreeOfAKindValues() {
-        return threeOfAKindValues;
-    }
-
-    public int[] getTwoPairValues() {
-        return twoPairValues;
-    }
-
-    public int[] getPairValues() {
-        return pairValues;
+        return String.format("First card: %s, Second card: %s\n", cards[0].toString(), cards[1].toString());
     }
 
     public int[] getCardsIncludingTable() {
         return cardsIncludingTable;
+    }
+
+    public int[] getBestCardValues()
+    {
+        return bestCardValues;
     }
 }

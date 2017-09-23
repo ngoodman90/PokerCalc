@@ -1,5 +1,3 @@
-import java.awt.event.ContainerAdapter;
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
@@ -10,7 +8,8 @@ import static java.lang.System.exit;
 /**
  * Created by Noam on 2017-09-15.
  */
-public class HandAnalyzer {
+public class HandAnalyzer
+{
 
     public static final Logger logger = Logger.getLogger(HandAnalyzer.class.getName());
 
@@ -32,7 +31,65 @@ public class HandAnalyzer {
                 exit(-1);
             }
         }
-        switch (handValueEnum) {
+
+        return getWinners(winningHands);
+    }
+
+    private static List<Hand> getWinners(List<Hand> winningHands)
+    {
+        int maxVal;
+        List<Hand> newWinningHands = new LinkedList<>();
+        ;
+
+        for (int i = 0; i < winningHands.get(0).getBestCardValues().length; i++)
+        {
+            maxVal = 0;
+            for (Hand hand : winningHands)
+            {
+                if (hand.getBestCardValues()[i] > maxVal)
+                {
+                    newWinningHands = new LinkedList<>();
+                    newWinningHands.add(hand);
+                    maxVal = hand.getBestCardValues()[i];
+                }
+                if (hand.getBestCardValues()[i] == maxVal)
+                {
+                    newWinningHands.add(hand);
+                }
+            }
+
+            winningHands = newWinningHands;
+
+            if (winningHands.size() <= 1)
+            {
+                break;
+            }
+        }
+        return winningHands;
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*        switch (handValueEnum) {
             case HIGH_CARD:
                 winningHands = highCardWinner(winningHands);
                 break;
@@ -234,7 +291,31 @@ public class HandAnalyzer {
         return null;
     }
 
-    private static List<Hand> pairWinner(List<Hand> winningHands) {
+    private static List<Hand> pairWinner(List<Hand> winningHands)
+    {
+        int maxVal;
+        List<Hand> newWinningHands = new LinkedList<>();
+
+        for (int i = 0; i < 4; i++) {
+            maxVal = 0;
+            for (Hand hand : winningHands) {
+                if (hand.getPairValues()[i] > maxVal) {
+                    maxVal = hand.getPairValues()[i];
+                }
+            }
+            for (Hand hand : winningHands)
+            {
+                if (hand.getPairValues()[i] == maxVal)
+                {
+                    newWinningHands.add(hand);
+                }
+            }
+
+            winningHands = newWinningHands;
+            if (winningHands.size() == 1)
+                break;
+            newWinningHands = new ArrayList<>();
+        }
         return null;
     }
 
@@ -270,5 +351,4 @@ public class HandAnalyzer {
             }
         }
         return winningHands;
-    }
-}
+    }*/

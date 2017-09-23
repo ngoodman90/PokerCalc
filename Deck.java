@@ -24,4 +24,9 @@ public class Deck {
     {
         return deck;
     }
+
+    public Card getCard(int cardIndex)
+    {
+        return cards.get(cardIndex);
+    }
 }
