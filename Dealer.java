@@ -25,7 +25,7 @@ public class Dealer
 
             if (winningHands.size() > 1)
             {
-                table.findBestHands(winningHands);
+                HandAnalyzer.findBestHands(winningHands);
             }
         }
 

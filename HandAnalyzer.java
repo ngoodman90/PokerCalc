@@ -39,7 +39,6 @@ public class HandAnalyzer
     {
         int maxVal;
         List<Hand> newWinningHands = new LinkedList<>();
-        ;
 
         for (int i = 0; i < winningHands.get(0).getBestCardValues().length; i++)
         {

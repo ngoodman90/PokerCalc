@@ -29,7 +29,7 @@ public class Table {
         int handCounter = 0;
         int[] cardIterator = new int[5];
 
-        for (cardIterator[0] = 0; cardIterator[0] < Constants.NUM_OF_CARDS_IN_DECK; cardIterator[0]++) {
+        /*for (cardIterator[0] = 0; cardIterator[0] < Constants.NUM_OF_CARDS_IN_DECK; cardIterator[0]++) {
             setTableCardInHands(0, hands, cardIterator);
             for (cardIterator[1] = cardIterator[0] + 1; cardIterator[1] < Constants.NUM_OF_CARDS_IN_DECK ; cardIterator[1]++) {
                 setTableCardInHands(1, hands, cardIterator);
@@ -68,7 +68,7 @@ public class Table {
                 Deck1.getDeck1().getCard(cardIterator[1]).setUsed(false);
             }
             Deck1.getDeck1().getCard(cardIterator[0]).setUsed(false);
-        }
+        }*/
         System.out.println("Hand Counter :" + handCounter);
         printStatistics(hands);
     }
@@ -101,7 +101,7 @@ public class Table {
         return winningHands;
     }
 
-    public void recursiveTableGenerator(int[] tableCards, int positionIndex, int cardIndex)
+    /*public void recursiveTableGenerator(int[] tableCards, int positionIndex, int cardIndex)
     {
         if (positionIndex == 5)
             analyzeTable();
@@ -115,27 +115,27 @@ public class Table {
                 continue;
             recursiveTableGenerator(tableCards, positionIndex + 1, cardIndex + 1);
         }
-    }
+    }*/
 
 
 
-    private int setTableCard(int cardNum)
+    /*private int setTableCard(int cardNum)
     {
         while (cardNum < Constants.NUM_OF_CARDS_IN_DECK && Deck1.getDeck1().getCard(cardNum).isUsed())
             cardNum++;
         if (cardNum < Constants.NUM_OF_CARDS_IN_DECK)
             Deck1.getDeck1().getCard(cardNum).setUsed(true);
         return cardNum;
-    }
+    }*/
 
-    private boolean setTableCardInHands(int index, ArrayList<Hand> hands, int[] cardIterator)
+    /*private boolean setTableCardInHands(int index, ArrayList<Hand> hands, int[] cardIterator)
     {
         if ((cardIterator[index] = setTableCard(cardIterator[index])) >= Constants.NUM_OF_CARDS_IN_DECK)
             return false;
         for (Hand hand : hands)
             hand.setTableCard(index + 2, cardIterator[index]);
         return true;
-    }
+    }*/
 
     public void setTableCardsInHands(int[] tableCards)
     {
@@ -144,7 +144,7 @@ public class Table {
             hand.setTableCards(tableCards);
         }
     }
-
+/*
     public ArrayList<Hand> findBestHands(ArrayList<Integer> winningHandsIndexes, int winningHandValue)
     {
     	ArrayList<Hand> winningHands = new ArrayList<>(winningHandsIndexes.size());
@@ -286,7 +286,7 @@ public class Table {
                 break;
         }
         return winningHands;
-    }
+    }*/
 
     private void printStatistics(ArrayList<Hand> hands)
     {
